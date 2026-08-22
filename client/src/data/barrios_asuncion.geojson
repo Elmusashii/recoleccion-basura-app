@@ -1,0 +1,2987 @@
+{
+  "type": "FeatureCollection",
+  "name": "Mapa Oficial de Asunción y sus Barrios - Delimitación Vectorial y Cronograma",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "zeballos-cue",
+      "properties": {
+        "id": "zeballos-cue",
+        "barrio": "Zeballos Cué",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Tte. Claudio Acosta, Cnel. Bóveda, Viñas Cué",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.575,
+              -25.205
+            ],
+            [
+              -57.555,
+              -25.212
+            ],
+            [
+              -57.56,
+              -25.228
+            ],
+            [
+              -57.58,
+              -25.229
+            ],
+            [
+              -57.582,
+              -25.215
+            ],
+            [
+              -57.575,
+              -25.205
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ipvu",
+      "properties": {
+        "id": "ipvu",
+        "barrio": "IPVU",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Zona Botánico Norte, San Miguel",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.585,
+              -25.223
+            ],
+            [
+              -57.572,
+              -25.225
+            ],
+            [
+              -57.574,
+              -25.234
+            ],
+            [
+              -57.588,
+              -25.232
+            ],
+            [
+              -57.585,
+              -25.223
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "de-las-residentas",
+      "properties": {
+        "id": "de-las-residentas",
+        "barrio": "De las Residentas",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Madame Lynch Norte, Av. Semidei",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.55,
+              -25.227
+            ],
+            [
+              -57.538,
+              -25.23
+            ],
+            [
+              -57.542,
+              -25.24
+            ],
+            [
+              -57.555,
+              -25.238
+            ],
+            [
+              -57.55,
+              -25.227
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-blas",
+      "properties": {
+        "id": "san-blas",
+        "barrio": "San Blas",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte / Noreste",
+        "calles_principales": "Límite Mariano Roque Alonso / Luque",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.536,
+              -25.226
+            ],
+            [
+              -57.522,
+              -25.231
+            ],
+            [
+              -57.525,
+              -25.239
+            ],
+            [
+              -57.538,
+              -25.237
+            ],
+            [
+              -57.536,
+              -25.226
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "loma-pyta",
+      "properties": {
+        "id": "loma-pyta",
+        "barrio": "Loma Pytã",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Ruta Transchaco, Av. Semidei, Dr. Andrés Barbero",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.562,
+              -25.236
+            ],
+            [
+              -57.538,
+              -25.236
+            ],
+            [
+              -57.545,
+              -25.252
+            ],
+            [
+              -57.568,
+              -25.25
+            ],
+            [
+              -57.562,
+              -25.236
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mbocayaty",
+      "properties": {
+        "id": "mbocayaty",
+        "barrio": "Mbocayaty",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste",
+        "calles_principales": "Av. Santísima Trinidad Este, Av. Madame Lynch",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.56,
+              -25.254
+            ],
+            [
+              -57.54,
+              -25.255
+            ],
+            [
+              -57.544,
+              -25.269
+            ],
+            [
+              -57.562,
+              -25.268
+            ],
+            [
+              -57.56,
+              -25.254
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "salvador-del-mundo",
+      "properties": {
+        "id": "salvador-del-mundo",
+        "barrio": "Salvador del Mundo",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste",
+        "calles_principales": "Av. Aviadores del Chaco, Mayor Infante Rivarola",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.548,
+              -25.267
+            ],
+            [
+              -57.535,
+              -25.269
+            ],
+            [
+              -57.538,
+              -25.278
+            ],
+            [
+              -57.55,
+              -25.276
+            ],
+            [
+              -57.548,
+              -25.267
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-jorge",
+      "properties": {
+        "id": "san-jorge",
+        "barrio": "San Jorge",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Este",
+        "calles_principales": "Av. Santa Teresa, Av. Salvador del Mundo, Ybyrapytã",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.558,
+              -25.274
+            ],
+            [
+              -57.542,
+              -25.276
+            ],
+            [
+              -57.545,
+              -25.288
+            ],
+            [
+              -57.56,
+              -25.287
+            ],
+            [
+              -57.558,
+              -25.274
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ytay",
+      "properties": {
+        "id": "ytay",
+        "barrio": "Ytay",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Este",
+        "calles_principales": "Av. Madame Lynch, Cnel. Martínez (Límite Luque)",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.54,
+              -25.279
+            ],
+            [
+              -57.525,
+              -25.281
+            ],
+            [
+              -57.528,
+              -25.295
+            ],
+            [
+              -57.542,
+              -25.293
+            ],
+            [
+              -57.54,
+              -25.279
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ycua-sati",
+      "properties": {
+        "id": "ycua-sati",
+        "barrio": "Ycuá Satí",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Este",
+        "calles_principales": "Av. Santa Teresa, Denis Roa, Dr. Juan E. O’Leary",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.573,
+              -25.282
+            ],
+            [
+              -57.556,
+              -25.282
+            ],
+            [
+              -57.558,
+              -25.295
+            ],
+            [
+              -57.575,
+              -25.294
+            ],
+            [
+              -57.573,
+              -25.282
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "santa-maria",
+      "properties": {
+        "id": "santa-maria",
+        "barrio": "Santa María",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Este",
+        "calles_principales": "Av. Mcal. López Este, Av. Santa Teresa Sur",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.544,
+              -25.294
+            ],
+            [
+              -57.53,
+              -25.296
+            ],
+            [
+              -57.532,
+              -25.308
+            ],
+            [
+              -57.546,
+              -25.307
+            ],
+            [
+              -57.544,
+              -25.294
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "herrera",
+      "properties": {
+        "id": "herrera",
+        "barrio": "Luis A. de Herrera",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Este",
+        "calles_principales": "Av. Mcal. López, Denis Roa, Lillo, Dr. Hassler",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.562,
+              -25.29
+            ],
+            [
+              -57.545,
+              -25.29
+            ],
+            [
+              -57.547,
+              -25.304
+            ],
+            [
+              -57.563,
+              -25.303
+            ],
+            [
+              -57.562,
+              -25.29
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "villa-aurelia",
+      "properties": {
+        "id": "villa-aurelia",
+        "barrio": "Villa Aurelia",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Este / Sureste",
+        "calles_principales": "Av. Guido Boggiani, Av. Eusebio Ayala Este, R.I. 18 Pitiantuta",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.565,
+              -25.302
+            ],
+            [
+              -57.548,
+              -25.302
+            ],
+            [
+              -57.55,
+              -25.316
+            ],
+            [
+              -57.566,
+              -25.316
+            ],
+            [
+              -57.565,
+              -25.302
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-pablo",
+      "properties": {
+        "id": "san-pablo",
+        "barrio": "San Pablo",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Sureste",
+        "calles_principales": "Av. Eusebio Ayala, Av. Defensores del Chaco, Abasto",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.575,
+              -25.318
+            ],
+            [
+              -57.555,
+              -25.318
+            ],
+            [
+              -57.558,
+              -25.338
+            ],
+            [
+              -57.576,
+              -25.338
+            ],
+            [
+              -57.575,
+              -25.318
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ita-pyta-punta",
+      "properties": {
+        "id": "ita-pyta-punta",
+        "barrio": "Itá Pytã Punta",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Oeste",
+        "calles_principales": "Mirador de Itá Pytã Punta, Comandante Gamarra",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.674,
+              -25.275
+            ],
+            [
+              -57.662,
+              -25.277
+            ],
+            [
+              -57.664,
+              -25.29
+            ],
+            [
+              -57.675,
+              -25.289
+            ],
+            [
+              -57.674,
+              -25.275
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-antonio",
+      "properties": {
+        "id": "san-antonio",
+        "barrio": "San Antonio",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Oeste",
+        "calles_principales": "Av. Dr. Paiva, Alférez Silva, Cnel. López",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.666,
+              -25.285
+            ],
+            [
+              -57.656,
+              -25.286
+            ],
+            [
+              -57.658,
+              -25.297
+            ],
+            [
+              -57.668,
+              -25.296
+            ],
+            [
+              -57.666,
+              -25.285
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "dr-gaspar-rodriguez-de-francia-sur",
+      "properties": {
+        "id": "dr-gaspar-rodriguez-de-francia-sur",
+        "barrio": "Dr. Francia (Sur)",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Centro-Sur",
+        "calles_principales": "Av. Dr. Gaspar Rodríguez de Francia, Ygatimí, Colón Sur",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.65,
+              -25.29
+            ],
+            [
+              -57.636,
+              -25.29
+            ],
+            [
+              -57.638,
+              -25.302
+            ],
+            [
+              -57.652,
+              -25.302
+            ],
+            [
+              -57.65,
+              -25.29
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tacumbu",
+      "properties": {
+        "id": "tacumbu",
+        "barrio": "Tacumbú",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur-Oeste",
+        "calles_principales": "Av. Colón Sur, 21 Proyectadas, Cerro Tacumbú",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.668,
+              -25.3
+            ],
+            [
+              -57.65,
+              -25.301
+            ],
+            [
+              -57.653,
+              -25.322
+            ],
+            [
+              -57.67,
+              -25.32
+            ],
+            [
+              -57.668,
+              -25.3
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "obrero",
+      "properties": {
+        "id": "obrero",
+        "barrio": "Obrero",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "5ta. Avenida (Acña de Figueroa), Av. Estados Unidos, 21 Proyectadas",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.645,
+              -25.3
+            ],
+            [
+              -57.625,
+              -25.3
+            ],
+            [
+              -57.626,
+              -25.318
+            ],
+            [
+              -57.646,
+              -25.318
+            ],
+            [
+              -57.645,
+              -25.3
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "roberto-l-petit",
+      "properties": {
+        "id": "roberto-l-petit",
+        "barrio": "Roberto L. Petit",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "21 Proyectadas, Antequera, México Proyectadas",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.655,
+              -25.316
+            ],
+            [
+              -57.638,
+              -25.316
+            ],
+            [
+              -57.64,
+              -25.328
+            ],
+            [
+              -57.657,
+              -25.328
+            ],
+            [
+              -57.655,
+              -25.316
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "santa-ana",
+      "properties": {
+        "id": "santa-ana",
+        "barrio": "Santa Ana",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "Bañado Sur, Antequera prolongación sur",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.666,
+              -25.325
+            ],
+            [
+              -57.648,
+              -25.326
+            ],
+            [
+              -57.65,
+              -25.34
+            ],
+            [
+              -57.668,
+              -25.339
+            ],
+            [
+              -57.666,
+              -25.325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-cayetano",
+      "properties": {
+        "id": "san-cayetano",
+        "barrio": "Bañado (San Cayetano)",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "Zona Bañado Sur, Mallorquín Sur",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.654,
+              -25.33
+            ],
+            [
+              -57.638,
+              -25.33
+            ],
+            [
+              -57.64,
+              -25.346
+            ],
+            [
+              -57.656,
+              -25.345
+            ],
+            [
+              -57.654,
+              -25.33
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "republicano",
+      "properties": {
+        "id": "republicano",
+        "barrio": "Republicano",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "Av. Japón, Cnel. Francisco López, Cantaluppi",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.638,
+              -25.322
+            ],
+            [
+              -57.62,
+              -25.322
+            ],
+            [
+              -57.622,
+              -25.342
+            ],
+            [
+              -57.64,
+              -25.342
+            ],
+            [
+              -57.638,
+              -25.322
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "jukyty",
+      "properties": {
+        "id": "jukyty",
+        "barrio": "Bañado",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "Faldas del Cerro Lambaré, Av. José Félix Bogado Sur",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.655,
+              -25.342
+            ],
+            [
+              -57.632,
+              -25.343
+            ],
+            [
+              -57.635,
+              -25.362
+            ],
+            [
+              -57.658,
+              -25.36
+            ],
+            [
+              -57.655,
+              -25.342
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "santa-librada",
+      "properties": {
+        "id": "santa-librada",
+        "barrio": "Ita Enramada (Norte)",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "Av. Perón, Cnel. Abraham Schweitzer",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.632,
+              -25.34
+            ],
+            [
+              -57.616,
+              -25.34
+            ],
+            [
+              -57.618,
+              -25.358
+            ],
+            [
+              -57.634,
+              -25.357
+            ],
+            [
+              -57.632,
+              -25.34
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ita-enramada",
+      "properties": {
+        "id": "ita-enramada",
+        "barrio": "Itá Enramada",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur Extremo",
+        "calles_principales": "Av. Cnel. Abraham Schweitzer, Club Sajonia Ribera, Río Paraguay",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.645,
+              -25.358
+            ],
+            [
+              -57.622,
+              -25.358
+            ],
+            [
+              -57.628,
+              -25.38
+            ],
+            [
+              -57.648,
+              -25.38
+            ],
+            [
+              -57.645,
+              -25.358
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-vicente-sur",
+      "properties": {
+        "id": "san-vicente-sur",
+        "barrio": "San Vicente",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur-Centro",
+        "calles_principales": "Av. Félix Bogado, Padre Cassanello, Tte. Pratts Gill",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.632,
+              -25.308
+            ],
+            [
+              -57.62,
+              -25.308
+            ],
+            [
+              -57.622,
+              -25.322
+            ],
+            [
+              -57.634,
+              -25.322
+            ],
+            [
+              -57.632,
+              -25.308
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mcal-francisco-solano-lopez",
+      "properties": {
+        "id": "mcal-francisco-solano-lopez",
+        "barrio": "Mcal. López",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. Mcal. López, Av. Brasilia Sur, Av. Choferes del Chaco",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.608,
+              -25.284
+            ],
+            [
+              -57.594,
+              -25.284
+            ],
+            [
+              -57.595,
+              -25.298
+            ],
+            [
+              -57.61,
+              -25.297
+            ],
+            [
+              -57.608,
+              -25.284
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "villa-morra",
+      "properties": {
+        "id": "villa-morra",
+        "barrio": "Villa Morra",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Eje Corporativo / Comercial",
+        "calles_principales": "Av. Mcal. López, Av. San Martín, Senador Long, Guido Spano",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.59,
+              -25.285
+            ],
+            [
+              -57.572,
+              -25.286
+            ],
+            [
+              -57.574,
+              -25.3
+            ],
+            [
+              -57.592,
+              -25.299
+            ],
+            [
+              -57.59,
+              -25.285
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "recoleta",
+      "properties": {
+        "id": "recoleta",
+        "barrio": "Recoleta",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. Choferes del Chaco, Av. Mcal. López, Cementerio de la Recoleta",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.598,
+              -25.292
+            ],
+            [
+              -57.58,
+              -25.292
+            ],
+            [
+              -57.582,
+              -25.306
+            ],
+            [
+              -57.6,
+              -25.305
+            ],
+            [
+              -57.598,
+              -25.292
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mburicao",
+      "properties": {
+        "id": "mburicao",
+        "barrio": "Mburicaó",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. Choferes del Chaco, Av. Eusebio Ayala, 25 de Mayo",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.61,
+              -25.296
+            ],
+            [
+              -57.596,
+              -25.296
+            ],
+            [
+              -57.597,
+              -25.31
+            ],
+            [
+              -57.612,
+              -25.309
+            ],
+            [
+              -57.61,
+              -25.296
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tembetary",
+      "properties": {
+        "id": "tembetary",
+        "barrio": "Tembetary",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Sur",
+        "calles_principales": "Av. Eusebio Ayala, Bartolomé de las Casas, Av. Choferes del Chaco",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.605,
+              -25.305
+            ],
+            [
+              -57.588,
+              -25.305
+            ],
+            [
+              -57.59,
+              -25.318
+            ],
+            [
+              -57.607,
+              -25.318
+            ],
+            [
+              -57.605,
+              -25.305
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "santa-rosa",
+      "properties": {
+        "id": "santa-rosa",
+        "barrio": "Santa Rosa",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Santísima Trinidad Norte, Vía Férrea Botánico",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.6,
+              -25.242
+            ],
+            [
+              -57.584,
+              -25.243
+            ],
+            [
+              -57.586,
+              -25.255
+            ],
+            [
+              -57.602,
+              -25.254
+            ],
+            [
+              -57.6,
+              -25.242
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "santisima-trinidad",
+      "properties": {
+        "id": "santisima-trinidad",
+        "barrio": "Santísima Trinidad",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Santísima Trinidad, Av. Artigas, Av. Itapúa",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.598,
+              -25.251
+            ],
+            [
+              -57.578,
+              -25.252
+            ],
+            [
+              -57.58,
+              -25.265
+            ],
+            [
+              -57.6,
+              -25.264
+            ],
+            [
+              -57.598,
+              -25.251
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mburucuya",
+      "properties": {
+        "id": "mburucuya",
+        "barrio": "Mburucuyá",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste",
+        "calles_principales": "Av. Santísima Trinidad, Av. Julio Correa, Cnel. Vicente Mongelós",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.586,
+              -25.26
+            ],
+            [
+              -57.567,
+              -25.261
+            ],
+            [
+              -57.569,
+              -25.274
+            ],
+            [
+              -57.588,
+              -25.273
+            ],
+            [
+              -57.586,
+              -25.26
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "madame-lynch",
+      "properties": {
+        "id": "madame-lynch",
+        "barrio": "Madame Lynch",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste",
+        "calles_principales": "Av. Madame Lynch, Av. Aviadores del Chaco Norte",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.568,
+              -25.262
+            ],
+            [
+              -57.549,
+              -25.263
+            ],
+            [
+              -57.551,
+              -25.276
+            ],
+            [
+              -57.57,
+              -25.275
+            ],
+            [
+              -57.568,
+              -25.262
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "jara",
+      "properties": {
+        "id": "jara",
+        "barrio": "Jara",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte-Centro",
+        "calles_principales": "Av. Brasilia, Av. Artigas, Av. España, Pitiantuta",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.616,
+              -25.268
+            ],
+            [
+              -57.598,
+              -25.269
+            ],
+            [
+              -57.6,
+              -25.283
+            ],
+            [
+              -57.618,
+              -25.282
+            ],
+            [
+              -57.616,
+              -25.268
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "virgen-del-huerto",
+      "properties": {
+        "id": "virgen-del-huerto",
+        "barrio": "Virgen del Huerto",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte-Centro",
+        "calles_principales": "Av. Venezuela, Av. Artigas, San Antonio",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.608,
+              -25.265
+            ],
+            [
+              -57.592,
+              -25.266
+            ],
+            [
+              -57.594,
+              -25.277
+            ],
+            [
+              -57.61,
+              -25.276
+            ],
+            [
+              -57.608,
+              -25.265
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "bella-vista",
+      "properties": {
+        "id": "bella-vista",
+        "barrio": "Bella Vista",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Venezuela, Cervantes, Río de Janeiro",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.604,
+              -25.26
+            ],
+            [
+              -57.588,
+              -25.261
+            ],
+            [
+              -57.59,
+              -25.272
+            ],
+            [
+              -57.606,
+              -25.271
+            ],
+            [
+              -57.604,
+              -25.26
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "santo-domingo",
+      "properties": {
+        "id": "santo-domingo",
+        "barrio": "Santo Domingo",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte-Este",
+        "calles_principales": "Av. San Martín Norte, Av. Molas López, Capitán Lombardo",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.595,
+              -25.27
+            ],
+            [
+              -57.578,
+              -25.271
+            ],
+            [
+              -57.58,
+              -25.284
+            ],
+            [
+              -57.597,
+              -25.283
+            ],
+            [
+              -57.595,
+              -25.27
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "las-lomas",
+      "properties": {
+        "id": "las-lomas",
+        "barrio": "Las Lomas",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste",
+        "calles_principales": "Av. Molas López, Av. San Martín, Nstra. Sra. del Carmen",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.58,
+              -25.267
+            ],
+            [
+              -57.562,
+              -25.268
+            ],
+            [
+              -57.564,
+              -25.281
+            ],
+            [
+              -57.582,
+              -25.28
+            ],
+            [
+              -57.58,
+              -25.267
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "manora",
+      "properties": {
+        "id": "manora",
+        "barrio": "Manorá",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste-Centro",
+        "calles_principales": "Av. España, Av. San Martín, Av. Mcal. López Norte",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.588,
+              -25.276
+            ],
+            [
+              -57.57,
+              -25.277
+            ],
+            [
+              -57.572,
+              -25.289
+            ],
+            [
+              -57.59,
+              -25.288
+            ],
+            [
+              -57.588,
+              -25.276
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "pinoza",
+      "properties": {
+        "id": "pinoza",
+        "barrio": "Pinozá",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Centro-Sur",
+        "calles_principales": "Av. Fernando de la Mora, Av. Gral. Santos, Av. Próceres de Mayo",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.624,
+              -25.305
+            ],
+            [
+              -57.608,
+              -25.305
+            ],
+            [
+              -57.61,
+              -25.319
+            ],
+            [
+              -57.626,
+              -25.319
+            ],
+            [
+              -57.624,
+              -25.305
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-vicente-este",
+      "properties": {
+        "id": "san-vicente-este",
+        "barrio": "San Vicente (Este)",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur-Centro",
+        "calles_principales": "Av. Félix Bogado Este, Pozo Favorito, Tte. Garay",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.63,
+              -25.314
+            ],
+            [
+              -57.616,
+              -25.314
+            ],
+            [
+              -57.618,
+              -25.328
+            ],
+            [
+              -57.632,
+              -25.328
+            ],
+            [
+              -57.63,
+              -25.314
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "vista-alegre",
+      "properties": {
+        "id": "vista-alegre",
+        "barrio": "Vista Alegre",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur-Centro",
+        "calles_principales": "Av. Fernando de la Mora, Médicos del Chaco, Bartolomé de las Casas",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.618,
+              -25.313
+            ],
+            [
+              -57.6,
+              -25.313
+            ],
+            [
+              -57.602,
+              -25.329
+            ],
+            [
+              -57.62,
+              -25.329
+            ],
+            [
+              -57.618,
+              -25.313
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "nazareth",
+      "properties": {
+        "id": "nazareth",
+        "barrio": "Nazareth",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sureste",
+        "calles_principales": "Av. Eusebio Ayala, Médicos del Chaco, Rca. Argentina",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.605,
+              -25.315
+            ],
+            [
+              -57.587,
+              -25.315
+            ],
+            [
+              -57.589,
+              -25.331
+            ],
+            [
+              -57.607,
+              -25.331
+            ],
+            [
+              -57.605,
+              -25.315
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "los-laureles",
+      "properties": {
+        "id": "los-laureles",
+        "barrio": "Los Laureles",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sureste",
+        "calles_principales": "Av. Rca. Argentina, Av. Guido Boggiani, Eusebio Ayala",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.585,
+              -25.305
+            ],
+            [
+              -57.568,
+              -25.305
+            ],
+            [
+              -57.57,
+              -25.319
+            ],
+            [
+              -57.587,
+              -25.319
+            ],
+            [
+              -57.585,
+              -25.305
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "hipodromo",
+      "properties": {
+        "id": "hipodromo",
+        "barrio": "Hipódromo",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sureste",
+        "calles_principales": "Av. Eusebio Ayala, Cedro, Jockey Club del Paraguay",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.59,
+              -25.32
+            ],
+            [
+              -57.572,
+              -25.32
+            ],
+            [
+              -57.574,
+              -25.336
+            ],
+            [
+              -57.592,
+              -25.336
+            ],
+            [
+              -57.59,
+              -25.32
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "terminal",
+      "properties": {
+        "id": "terminal",
+        "barrio": "Terminal",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Sur",
+        "calles_principales": "Av. Fernando de la Mora, Av. Rca. Argentina, Terminal de Ómnibus",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.602,
+              -25.33
+            ],
+            [
+              -57.582,
+              -25.33
+            ],
+            [
+              -57.584,
+              -25.344
+            ],
+            [
+              -57.604,
+              -25.344
+            ],
+            [
+              -57.602,
+              -25.33
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "mcal-estigarribia",
+      "properties": {
+        "id": "mcal-estigarribia",
+        "barrio": "Mcal. Estigarribia",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Tarde",
+        "horario": "12:00 a 18:00 hs",
+        "color_hex": "#f97316",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. Mcal. López, Av. Guido Boggiani, Facundo Machaín",
+        "recomendacion": "Sacar las bolsas cerradas entre las 11:30 y las 12:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.577,
+              -25.295
+            ],
+            [
+              -57.559,
+              -25.295
+            ],
+            [
+              -57.561,
+              -25.309
+            ],
+            [
+              -57.579,
+              -25.309
+            ],
+            [
+              -57.577,
+              -25.295
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "carlos-antonio-lopez-sajonia",
+      "properties": {
+        "id": "carlos-antonio-lopez-sajonia",
+        "barrio": "Carlos Antonio López",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Oeste",
+        "calles_principales": "Av. Carlos Antonio López, Av. Colón, Estadio Defensores del Chaco",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.666,
+              -25.288
+            ],
+            [
+              -57.646,
+              -25.289
+            ],
+            [
+              -57.648,
+              -25.306
+            ],
+            [
+              -57.668,
+              -25.305
+            ],
+            [
+              -57.666,
+              -25.288
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "dr-gaspar-rodriguez-de-francia-norte",
+      "properties": {
+        "id": "dr-gaspar-rodriguez-de-francia-norte",
+        "barrio": "Dr. Francia",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro",
+        "calles_principales": "Av. Dr. Gaspar Rodríguez de Francia, Ygatimí, Alberdi",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.65,
+              -25.284
+            ],
+            [
+              -57.638,
+              -25.284
+            ],
+            [
+              -57.64,
+              -25.294
+            ],
+            [
+              -57.652,
+              -25.294
+            ],
+            [
+              -57.65,
+              -25.284
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "la-encarnacion",
+      "properties": {
+        "id": "la-encarnacion",
+        "barrio": "Encarnación",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro Histórico",
+        "calles_principales": "Calle Palma, Estrella, Oliva, Eduardo Víctor Haedo, 14 de Mayo",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.645,
+              -25.279
+            ],
+            [
+              -57.633,
+              -25.279
+            ],
+            [
+              -57.635,
+              -25.289
+            ],
+            [
+              -57.647,
+              -25.289
+            ],
+            [
+              -57.645,
+              -25.279
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "la-catedral",
+      "properties": {
+        "id": "la-catedral",
+        "barrio": "Catedral",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro Histórico",
+        "calles_principales": "Catedral Metropolitana, Plaza de Armas, Palacio de López, El Paraguayo Independiente",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.639,
+              -25.276
+            ],
+            [
+              -57.627,
+              -25.276
+            ],
+            [
+              -57.629,
+              -25.286
+            ],
+            [
+              -57.641,
+              -25.286
+            ],
+            [
+              -57.639,
+              -25.276
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "san-roque",
+      "properties": {
+        "id": "san-roque",
+        "barrio": "San Roque",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro Histórico / Este",
+        "calles_principales": "Antequera, Tacuary, Mcal. Estigarribia, Eligio Ayala, Plaza Uruguaya",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.633,
+              -25.28
+            ],
+            [
+              -57.619,
+              -25.28
+            ],
+            [
+              -57.621,
+              -25.292
+            ],
+            [
+              -57.635,
+              -25.292
+            ],
+            [
+              -57.633,
+              -25.28
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "las-mercedes",
+      "properties": {
+        "id": "las-mercedes",
+        "barrio": "Las Mercedes",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. España, Av. Mcal. López, Curupayty, Washington, Juan de Salazar",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.62,
+              -25.277
+            ],
+            [
+              -57.604,
+              -25.278
+            ],
+            [
+              -57.606,
+              -25.291
+            ],
+            [
+              -57.622,
+              -25.29
+            ],
+            [
+              -57.62,
+              -25.277
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ciudad-nueva",
+      "properties": {
+        "id": "ciudad-nueva",
+        "barrio": "Ciudad Nueva",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. Eusebio Ayala, Av. Perú, Mayor Fleitas, Teodoro S. Mongelós",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.626,
+              -25.292
+            ],
+            [
+              -57.61,
+              -25.292
+            ],
+            [
+              -57.612,
+              -25.306
+            ],
+            [
+              -57.628,
+              -25.306
+            ],
+            [
+              -57.626,
+              -25.292
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "bernardino-caballero",
+      "properties": {
+        "id": "bernardino-caballero",
+        "barrio": "Bernardino Caballero",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro-Este",
+        "calles_principales": "Av. Eusebio Ayala, Av. Gral. Santos, Parque Caballero",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.618,
+              -25.298
+            ],
+            [
+              -57.602,
+              -25.298
+            ],
+            [
+              -57.604,
+              -25.312
+            ],
+            [
+              -57.62,
+              -25.312
+            ],
+            [
+              -57.618,
+              -25.298
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "silvio-pettirossi",
+      "properties": {
+        "id": "silvio-pettirossi",
+        "barrio": "Pettirossi",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Comercial / Mercado 4",
+        "calles_principales": "Av. Silvio Pettirossi, Av. Perú, Av. Rodríguez de Francia, Mercado 4",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.634,
+              -25.297
+            ],
+            [
+              -57.618,
+              -25.297
+            ],
+            [
+              -57.62,
+              -25.311
+            ],
+            [
+              -57.636,
+              -25.311
+            ],
+            [
+              -57.634,
+              -25.297
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "botanico",
+      "properties": {
+        "id": "botanico",
+        "barrio": "Botánico",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Primer Presidente, Jardín Botánico, Av. Artigas",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.578,
+              -25.222
+            ],
+            [
+              -57.552,
+              -25.22
+            ],
+            [
+              -57.548,
+              -25.242
+            ],
+            [
+              -57.574,
+              -25.245
+            ],
+            [
+              -57.578,
+              -25.222
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "nu-guazu",
+      "properties": {
+        "id": "nu-guazu",
+        "barrio": "Ñu Guazú",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Noreste",
+        "calles_principales": "Av. Silvio Pettirossi, Parque Ñu Guazú (Límite Luque)",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.54,
+              -25.245
+            ],
+            [
+              -57.52,
+              -25.24
+            ],
+            [
+              -57.522,
+              -25.262
+            ],
+            [
+              -57.542,
+              -25.265
+            ],
+            [
+              -57.54,
+              -25.245
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "banco-san-miguel",
+      "properties": {
+        "id": "banco-san-miguel",
+        "barrio": "Banco San Miguel",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Ribera / Bahía",
+        "calles_principales": "Costanera Norte, Península Bahía de Asunción",
+        "recomendacion": "Depositar residuos en contenedores costeros autorizados"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.652,
+              -25.255
+            ],
+            [
+              -57.63,
+              -25.245
+            ],
+            [
+              -57.618,
+              -25.258
+            ],
+            [
+              -57.632,
+              -25.272
+            ],
+            [
+              -57.649,
+              -25.275
+            ],
+            [
+              -57.652,
+              -25.255
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "ricardo-brugada",
+      "properties": {
+        "id": "ricardo-brugada",
+        "barrio": "Ricardo Brugada",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Costanera / Chacarita",
+        "calles_principales": "Plaza Uruguaya Norte, Bajada Florencio Villamayor",
+        "recomendacion": "Disponer residuos en bolsas reforzadas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.635,
+              -25.274
+            ],
+            [
+              -57.62,
+              -25.272
+            ],
+            [
+              -57.618,
+              -25.284
+            ],
+            [
+              -57.632,
+              -25.286
+            ],
+            [
+              -57.635,
+              -25.274
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "banado-cara-cara",
+      "properties": {
+        "id": "banado-cara-cara",
+        "barrio": "Bañado Cara Cará",
+        "frecuencia": "Martes, Jueves y Sábado",
+        "frecuencia_codigo": "MARTES_JUEVES_SABADO",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte Ribereño",
+        "calles_principales": "Ribera Norte, Sector Cañadón",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.575,
+              -25.232
+            ],
+            [
+              -57.56,
+              -25.228
+            ],
+            [
+              -57.558,
+              -25.242
+            ],
+            [
+              -57.572,
+              -25.245
+            ],
+            [
+              -57.575,
+              -25.232
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "tablada-nueva",
+      "properties": {
+        "id": "tablada-nueva",
+        "barrio": "Tablada Nueva",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte Ribereño",
+        "calles_principales": "Av. Artigas Norte, Lombardo",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.585,
+              -25.239
+            ],
+            [
+              -57.57,
+              -25.236
+            ],
+            [
+              -57.568,
+              -25.249
+            ],
+            [
+              -57.582,
+              -25.251
+            ],
+            [
+              -57.585,
+              -25.239
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "virgen-de-fatima",
+      "properties": {
+        "id": "virgen-de-fatima",
+        "barrio": "Virgen de Fátima",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Santísima Trinidad Oeste, Av. Artigas",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.578,
+              -25.244
+            ],
+            [
+              -57.564,
+              -25.242
+            ],
+            [
+              -57.562,
+              -25.254
+            ],
+            [
+              -57.576,
+              -25.256
+            ],
+            [
+              -57.578,
+              -25.244
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "canada-del-ybyray",
+      "properties": {
+        "id": "canada-del-ybyray",
+        "barrio": "Cañada del Ybyray",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Santísima Trinidad, Julio Correa",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.572,
+              -25.261
+            ],
+            [
+              -57.558,
+              -25.259
+            ],
+            [
+              -57.556,
+              -25.271
+            ],
+            [
+              -57.57,
+              -25.273
+            ],
+            [
+              -57.572,
+              -25.261
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "virgen-de-la-asuncion",
+      "properties": {
+        "id": "virgen-de-la-asuncion",
+        "barrio": "Virgen de la Asunción",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Mañana",
+        "horario": "06:00 a 12:00 hs",
+        "color_hex": "#10b981",
+        "zona": "Norte",
+        "calles_principales": "Av. Venezuela, Av. Artigas",
+        "recomendacion": "Sacar las bolsas cerradas entre las 05:30 y las 06:00 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.588,
+              -25.256
+            ],
+            [
+              -57.574,
+              -25.254
+            ],
+            [
+              -57.572,
+              -25.267
+            ],
+            [
+              -57.586,
+              -25.269
+            ],
+            [
+              -57.588,
+              -25.256
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gral-diaz",
+      "properties": {
+        "id": "gral-diaz",
+        "barrio": "Gral. Díaz",
+        "frecuencia": "Lunes, Miércoles y Viernes",
+        "frecuencia_codigo": "LUNES_MIERCOLES_VIERNES",
+        "turno": "Noche",
+        "horario": "19:00 a 02:00 hs",
+        "color_hex": "#334155",
+        "zona": "Centro",
+        "calles_principales": "Chile, Alberdi, Yegros, Haedo, Piribebuy",
+        "recomendacion": "Sacar las bolsas cerradas a partir de las 18:30 hs"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -57.64,
+              -25.286
+            ],
+            [
+              -57.628,
+              -25.284
+            ],
+            [
+              -57.626,
+              -25.297
+            ],
+            [
+              -57.638,
+              -25.299
+            ],
+            [
+              -57.64,
+              -25.286
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

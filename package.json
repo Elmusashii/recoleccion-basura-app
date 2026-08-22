@@ -1,0 +1,33 @@
+{
+  "name": "recoleccion-basura-asuncion",
+  "version": "1.0.0",
+  "description": "Sistema de Rutas de Recolección de Basura y Denuncias Ciudadanas - Municipalidad de Asunción (Stack Gratuito)",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,green\" \"npm.cmd run dev --workspace=server\" \"npm.cmd run dev --workspace=client\"",
+    "dev:server": "npm.cmd run dev --workspace=server",
+    "dev:client": "npm.cmd run dev --workspace=client",
+    "install:all": "npm.cmd install && npm.cmd install --workspace=server && npm.cmd install --workspace=client",
+    "build": "npm.cmd run build --workspace=client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "osmtogeojson": "^3.0.0-beta.5"
+  },
+  "keywords": [
+    "asuncion",
+    "municipalidad",
+    "recoleccion-basura",
+    "postgis",
+    "supabase",
+    "leaflet",
+    "express",
+    "react"
+  ],
+  "author": "Equipo de Desarrollo Municipal",
+  "license": "MIT"
+}
