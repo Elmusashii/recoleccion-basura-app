@@ -35,13 +35,19 @@ const ROLE_CONFIG = {
     label: 'Supervisor de Rutas',
     color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
     icon: '📋',
-    desc: 'Control de bitácora, aprobación de reclamos y monitoreo'
+    desc: 'Control de bitácora, asignación de camiones y monitoreo'
+  },
+  chofer: {
+    label: 'Chofer',
+    color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    icon: '🚚',
+    desc: 'Conductor de camión recolector, reportes de avería y resolución de denuncias asignadas'
   },
   operator: {
     label: 'Operador de Flota',
     color: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
     icon: '🚛',
-    desc: 'Chofer o tripulante de camión, registro de viajes y pesajes'
+    desc: 'Tripulante o cuadrilla, registro de pesajes y apoyo'
   },
   inspector: {
     label: 'Fiscalizador Ambiental',
@@ -287,6 +293,7 @@ export const UserManagement = () => {
             <option value="ALL">Todos los Roles</option>
             <option value="admin">👑 Administradores</option>
             <option value="supervisor">📋 Supervisores</option>
+            <option value="chofer">🚚 Choferes de Camión</option>
             <option value="operator">🚛 Operadores de Flota</option>
             <option value="inspector">🔍 Fiscalizadores</option>
           </select>
@@ -492,7 +499,8 @@ export const UserManagement = () => {
                   onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                   className="w-full bg-slate-800 border border-slate-700 rounded-xl p-2.5 text-slate-100 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                 >
-                  <option value="operator">🚛 Operador de Flota (Chofer / Registro de Viajes)</option>
+                  <option value="chofer">🚚 Chofer (Conducción y Atención de Denuncias)</option>
+                  <option value="operator">🚛 Operador de Flota (Tripulación y Pesajes)</option>
                   <option value="supervisor">📋 Supervisor de Rutas y Cronogramas</option>
                   <option value="inspector">🔍 Fiscalizador Ambiental (Denuncias y Vertederos)</option>
                   <option value="admin">👑 Administrador General (Control Total)</option>

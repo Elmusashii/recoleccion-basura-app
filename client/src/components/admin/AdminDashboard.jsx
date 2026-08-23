@@ -19,10 +19,13 @@ import {
   Users,
   ShieldCheck,
   UserCheck,
+  UserPlus,
+  Wrench,
+  AlertTriangle,
   Eye,
   X
 } from 'lucide-react';
-import { ReportsAPI, FleetAPI, RoutesAPI } from '../../services/api';
+import { ReportsAPI, FleetAPI, RoutesAPI, UsersAPI } from '../../services/api';
 import { OFFICIAL_BARRIOS, COLOR_PALETTE } from '../../data/officialRoutes';
 import { UserManagement } from './UserManagement';
 import { AssignReportModal } from './AssignReportModal';
@@ -30,12 +33,13 @@ import { ResolveReportModal } from './ResolveReportModal';
 import { useAuth } from '../../context/AuthContext';
 
 export const AdminDashboard = () => {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState('REPORTS'); // REPORTS, FLEET, ROUTES, USERS, HEATMAP
   const [reports, setReports] = useState([]);
   const [trucks, setTrucks] = useState([]);
   const [fleetLogs, setFleetLogs] = useState([]);
   const [routes, setRoutes] = useState([]);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [routeSearch, setRouteSearch] = useState('');
   const [routeDayFilter, setRouteDayFilter] = useState('ALL');
@@ -48,6 +52,11 @@ export const AdminDashboard = () => {
 
   // Modal para ver foto de denuncia
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+
+  // Modal para asignación de chofer a camión (Admin / Supervisor)
+  const [selectedTruckForDriver, setSelectedTruckForDriver] = useState(null);
+  const [selectedDriverId, setSelectedDriverId] = useState('');
+  const [savingDriver, setSavingDriver] = useState(false);
 
   // Formulario rápido de Bitácora
   const [newLog, setNewLog] = useState({
@@ -63,11 +72,12 @@ export const AdminDashboard = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [reportsRes, trucksRes, logsRes, routesRes] = await Promise.allSettled([
+      const [reportsRes, trucksRes, logsRes, routesRes, usersRes] = await Promise.allSettled([
         ReportsAPI.getAdmin({ limit: 100 }),
         FleetAPI.getTrucks(),
         FleetAPI.getLogs({ limit: 50 }),
-        RoutesAPI.getAll()
+        RoutesAPI.getAll(),
+        UsersAPI.getAll()
       ]);
 
       if (reportsRes.status === 'fulfilled') {
@@ -81,6 +91,9 @@ export const AdminDashboard = () => {
       }
       if (routesRes.status === 'fulfilled') {
         setRoutes(routesRes.value.data?.data || []);
+      }
+      if (usersRes.status === 'fulfilled') {
+        setUsers(usersRes.value.data?.data || []);
       }
     } catch (err) {
       console.error('Error al cargar datos administrativos:', err);
@@ -107,6 +120,36 @@ export const AdminDashboard = () => {
     );
     setToastMessage(`Denuncia ${updatedReport.ticket_number || ''} marcada como RESUELTA con éxito.`);
     setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const handleOpenAssignDriverModal = (truck) => {
+    setSelectedTruckForDriver(truck);
+    setSelectedDriverId(truck.assigned_user_id || '');
+  };
+
+  const handleSaveDriverAssignment = async (e) => {
+    if (e) e.preventDefault();
+    if (!selectedTruckForDriver) return;
+    setSavingDriver(true);
+    try {
+      const res = await FleetAPI.assignDriver(selectedTruckForDriver.id, selectedDriverId || null);
+      const updated = res.data?.data;
+      if (updated) {
+        setTrucks(prev => prev.map(t => t.id === selectedTruckForDriver.id ? { ...t, ...updated, assigned_user_id: selectedDriverId || null } : t));
+        const choferObj = users.find(u => u.id === selectedDriverId);
+        setToastMessage(
+          selectedDriverId
+            ? `Chofer ${choferObj?.name || 'municipal'} asignado al camión ${selectedTruckForDriver.code}`
+            : `Camión ${selectedTruckForDriver.code} desasignado correctamente`
+        );
+        setTimeout(() => setToastMessage(null), 4000);
+      }
+      setSelectedTruckForDriver(null);
+    } catch (err) {
+      alert(err.response?.data?.message || 'Error al asignar chofer');
+    } finally {
+      setSavingDriver(false);
+    }
   };
 
   const getAssignedReportsForTruck = (truckId, truckCode) => {
@@ -544,13 +587,128 @@ export const AdminDashboard = () => {
         const assignedReportsToSelected = selectedTruck ? getAssignedReportsForTruck(selectedTruck.id, selectedTruck.code) : [];
 
         return (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Formulario de Registro de Salida / Entrada */}
+          <div className="space-y-6">
+            {/* Panel de Unidades de Flota y Asignación de Choferes */}
             <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center space-x-2">
-                <PlusCircle className="w-5 h-5 text-emerald-400" />
-                <span>Registrar Movimiento de Flota</span>
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center space-x-2">
+                    <Truck className="w-5 h-5 text-emerald-400" />
+                    <span>Unidades de Flota & Asignación de Choferes</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Parque automotor municipal: vinculación de choferes para recepción de denuncias operativas
+                  </p>
+                </div>
+                <span className="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full self-start sm:self-auto">
+                  {trucks.length} Unidades Activas
+                </span>
+              </div>
+
+              {/* Grid de Camiones */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-1">
+                {trucks.map((t) => {
+                  const assignedDriver = users.find(u => u.id === t.assigned_user_id);
+                  const truckReports = getAssignedReportsForTruck(t.id, t.code);
+                  
+                  return (
+                    <div
+                      key={t.id}
+                      className="glass-card p-4 rounded-2xl border border-slate-800/80 bg-slate-900/60 hover:border-slate-700 transition space-y-3 flex flex-col justify-between"
+                    >
+                      {/* Cabecera del Camión */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-extrabold text-white text-base tracking-tight bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-700 font-mono">
+                              {t.code}
+                            </span>
+                            <span className="text-xs font-mono text-slate-400 font-semibold">
+                              {t.plate_number || 'S/D'}
+                            </span>
+                          </div>
+
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              t.status === 'EN_RUTA'
+                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse'
+                                : t.status === 'FUERA_DE_SERVICIO' || t.status === 'EN_MANTENIMIENTO'
+                                ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                                : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            }`}
+                          >
+                            {t.status === 'FUERA_DE_SERVICIO' ? '⚠️ AVERIADO' : t.status}
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-300 font-medium">
+                          {t.model || 'Camión Recolector Compactador'}
+                        </p>
+                        
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+                          <span>Capacidad: <strong className="text-slate-200">{t.capacity_tons || 12} Tn</strong></span>
+                          <span>Ruta: <strong className="text-emerald-400">{t.routes?.name || t.routes?.zone || 'General'}</strong></span>
+                        </div>
+                      </div>
+
+                      {/* Denuncias asignadas activas */}
+                      {truckReports.length > 0 && (
+                        <div className="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-[11px] flex items-center justify-between font-medium">
+                          <span>📌 {truckReports.length} {truckReports.length === 1 ? 'denuncia en proceso' : 'denuncias en proceso'}</span>
+                        </div>
+                      )}
+
+                      {/* Caja de Chofer Asignado */}
+                      <div className="pt-2 border-t border-slate-800">
+                        {assignedDriver ? (
+                          <div className="p-2.5 rounded-xl bg-cyan-950/30 border border-cyan-500/30 flex items-center justify-between">
+                            <div className="flex items-center space-x-2 min-w-0">
+                              <span className="text-base">🚚</span>
+                              <div className="truncate">
+                                <p className="font-bold text-white text-xs truncate">{assignedDriver.name}</p>
+                                <p className="text-[10px] text-cyan-300/80 truncate">{assignedDriver.phone || assignedDriver.email}</p>
+                              </div>
+                            </div>
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleOpenAssignDriverModal(t)}
+                                className="ml-2 text-[10px] font-bold bg-slate-800 hover:bg-slate-700 text-cyan-300 px-2.5 py-1 rounded-lg border border-slate-700 transition shrink-0"
+                              >
+                                Cambiar
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="p-2.5 rounded-xl bg-slate-800/40 border border-dashed border-slate-700 flex items-center justify-between">
+                            <span className="text-[11px] text-slate-400 italic flex items-center space-x-1">
+                              <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 inline mr-1" />
+                              Sin chofer
+                            </span>
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleOpenAssignDriverModal(t)}
+                                className="text-[10px] font-bold bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/30 px-2.5 py-1 rounded-lg transition shrink-0"
+                              >
+                                Asignar Chofer
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Fila Inferior: Formulario de Registro de Salida / Entrada + Bitácora Reciente */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Formulario de Registro de Salida / Entrada */}
+              <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+                <h3 className="text-base font-bold text-white flex items-center space-x-2">
+                  <PlusCircle className="w-5 h-5 text-emerald-400" />
+                  <span>Registrar Movimiento de Flota</span>
+                </h3>
 
               <form onSubmit={handleCreateFleetLog} className="space-y-3 text-xs">
                 <div>
@@ -783,8 +941,9 @@ export const AdminDashboard = () => {
               </div>
             </div>
           </div>
-        );
-      })()}
+        </div>
+      );
+    })()}
 
       {/* Pestaña 3: CRONOGRAMAS OFICIALES POR BARRIO */}
       {activeTab === 'ROUTES' && (
@@ -1024,6 +1183,101 @@ export const AdminDashboard = () => {
         report={selectedReportForResolve}
         onResolved={handleReportResolved}
       />
+
+      {/* Modal para Asignación de Chofer a Camión (Admin / Supervisor) */}
+      {selectedTruckForDriver && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-md bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-2 bg-cyan-500/10 text-cyan-400 rounded-xl border border-cyan-500/20">
+                  <Truck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white flex items-center space-x-2">
+                    <span>Asignar Chofer a {selectedTruckForDriver.code}</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Chapa: {selectedTruckForDriver.plate_number || 'S/D'} • {selectedTruckForDriver.model || 'Recolector'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedTruckForDriver(null)}
+                className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveDriverAssignment} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-slate-300 font-semibold mb-1.5">
+                  Seleccionar Chofer Responsable
+                </label>
+                <select
+                  value={selectedDriverId}
+                  onChange={(e) => setSelectedDriverId(e.target.value)}
+                  className="w-full bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                >
+                  <option value="">-- Sin Chofer Asignado (Desvincular) --</option>
+                  
+                  {users.filter(u => u.role === 'chofer').length > 0 && (
+                    <optgroup label="Choferes Registrados (Rol: Chofer)">
+                      {users
+                        .filter(u => u.role === 'chofer')
+                        .map((u) => (
+                          <option key={u.id} value={u.id}>
+                            🚚 {u.name} ({u.email}) {u.phone ? `- Tel: ${u.phone}` : ''}
+                          </option>
+                        ))}
+                    </optgroup>
+                  )}
+
+                  {users.filter(u => u.role !== 'chofer' && u.role !== 'admin').length > 0 && (
+                    <optgroup label="Otros Funcionarios Operativos">
+                      {users
+                        .filter(u => u.role !== 'chofer' && u.role !== 'admin')
+                        .map((u) => (
+                          <option key={u.id} value={u.id}>
+                            👤 {u.name} ({u.email}) [{u.role?.toUpperCase()}]
+                          </option>
+                        ))}
+                    </optgroup>
+                  )}
+                </select>
+                <p className="text-[11px] text-slate-400 mt-1.5">
+                  El chofer asignado podrá ver este camión en su panel móvil, recibir las denuncias de su zona y reportar averías.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTruckForDriver(null)}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl transition"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingDriver}
+                  className="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-950/40 transition disabled:opacity-50 flex items-center space-x-1.5"
+                >
+                  {savingDriver ? (
+                    <span>Guardando...</span>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Guardar Asignación</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

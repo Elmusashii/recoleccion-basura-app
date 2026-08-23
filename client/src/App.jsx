@@ -20,6 +20,7 @@ import {
 import { CitizenMap } from './components/citizen/CitizenMap';
 import { ReportModal } from './components/citizen/ReportModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { DriverDashboard } from './components/driver/DriverDashboard';
 import { LoginModal } from './components/auth/LoginModal';
 import { ReportsAPI } from './services/api';
 import { useAuth } from './context/AuthContext';
@@ -160,12 +161,23 @@ export function App() {
                   onClick={handleSwitchToAdmin}
                   className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                     currentView === 'ADMIN'
-                      ? 'bg-emerald-600 text-white shadow-md'
+                      ? user?.role === 'chofer'
+                        ? 'bg-cyan-600 text-white shadow-md'
+                        : 'bg-emerald-600 text-white shadow-md'
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Panel Interno</span>
+                  {user?.role === 'chofer' ? (
+                    <>
+                      <span className="text-xs">🚚</span>
+                      <span>Panel Chofer</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3.5 h-3.5" />
+                      <span>Panel Interno</span>
+                    </>
+                  )}
                 </button>
               </div>
             )}
@@ -208,7 +220,11 @@ export function App() {
             />
           </div>
         ) : isAuthenticated ? (
-          <AdminDashboard />
+          user?.role === 'chofer' ? (
+            <DriverDashboard />
+          ) : (
+            <AdminDashboard />
+          )
         ) : (
           <div className="max-w-md mx-auto my-16 p-8 glass-panel rounded-3xl border border-slate-800 text-center space-y-4 shadow-2xl">
             <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center border border-rose-500/20">

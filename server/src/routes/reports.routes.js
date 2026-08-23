@@ -7,7 +7,8 @@ import {
   getReportByTicket,
   updateReportStatus,
   uploadReportPhotoController,
-  getWeeklyReportStats
+  getWeeklyReportStats,
+  getReportsAssignedToMe
 } from '../controllers/reports.controller.js';
 import { authenticate, requireRole } from '../middlewares/auth.js';
 import { uploadReportPhotoMiddleware } from '../middlewares/upload.js';
@@ -22,9 +23,12 @@ router.get('/ticket/:ticket', getReportByTicket);       // Consultar estado de t
 router.get('/heatmap', getReportsHeatmap);             // Mapa de calor para visualización pública/admin
 router.get('/', getReports);                            // Listar denuncias públicas (sanitizado)
 
+// Endpoints para Choferes y Personal Operativo (Requieren Auth)
+router.get('/assigned-to-me', authenticate, getReportsAssignedToMe);
+
 // Endpoints de Gestión y Moderación (Requieren Auth & Rol)
 router.get('/admin', authenticate, requireRole(['admin', 'supervisor', 'operator']), getReportsAdmin);
-router.patch('/:id/status', authenticate, requireRole(['admin', 'supervisor', 'operator']), updateReportStatus);
+router.patch('/:id/status', authenticate, requireRole(['admin', 'supervisor', 'operator', 'chofer']), updateReportStatus);
 
 export default router;
 

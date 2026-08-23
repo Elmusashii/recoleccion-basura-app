@@ -394,7 +394,91 @@ export const getReportByTicket = async (req, res) => {
 };
 
 /**
- * Actualizar estado de una denuncia (Admin / Operador)
+ * Listar denuncias asignadas al camión del chofer logueado
+ * GET /api/reports/assigned-to-me
+ */
+export const getReportsAssignedToMe = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return errorResponse(res, 'Usuario no autenticado', null, 401);
+    }
+
+    // 1. Obtener el camión asignado al chofer
+    let userTruck = null;
+    try {
+      const { data, error } = await supabase
+        .from('trucks')
+        .select('id, code, plate_number, model, status')
+        .eq('assigned_user_id', userId)
+        .maybeSingle();
+
+      if (!error && data) {
+        userTruck = data;
+      }
+    } catch (dbErr) {
+      console.warn('DB error buscando camión del usuario:', dbErr.message);
+    }
+
+    if (!userTruck) {
+      return successResponse(res, 'No tienes un camión asignado actualmente', {
+        truck: null,
+        reports: [],
+        total: 0
+      });
+    }
+
+    // 2. Obtener denuncias 'EN_PROCESO' asignadas a este camión
+    const PUBLIC_COLUMNS = 'id, ticket_number, category, description, status, latitude, longitude, address_reference, photo_urls, created_at, resolved_at, assigned_truck_id, admin_notes';
+
+    let reports = [];
+    try {
+      const { data, error } = await supabase
+        .from('reports')
+        .select(PUBLIC_COLUMNS)
+        .eq('assigned_truck_id', userTruck.id)
+        .eq('status', 'EN_PROCESO')
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        reports = data;
+      }
+    } catch (dbErr) {
+      console.warn('DB error buscando denuncias asignadas:', dbErr.message);
+    }
+
+    if (reports.length === 0 && LOCAL_REPORTS.length > 0) {
+      reports = LOCAL_REPORTS
+        .filter(r => (r.assigned_truck_id === userTruck.id || r.assigned_truck_id === userTruck.code) && r.status === 'EN_PROCESO')
+        .map(r => ({
+          id: r.id,
+          ticket_number: r.ticket_number,
+          category: r.category,
+          description: r.description,
+          status: r.status,
+          latitude: r.latitude,
+          longitude: r.longitude,
+          address_reference: r.address_reference,
+          photo_urls: r.photo_urls,
+          created_at: r.created_at,
+          resolved_at: r.resolved_at,
+          assigned_truck_id: r.assigned_truck_id,
+          admin_notes: r.admin_notes
+        }));
+    }
+
+    return successResponse(res, 'Denuncias asignadas obtenidas correctamente', {
+      truck: userTruck,
+      reports,
+      total: reports.length
+    });
+  } catch (err) {
+    return errorResponse(res, 'Error al consultar denuncias asignadas', err, 500);
+  }
+};
+
+/**
+ * Actualizar estado de una denuncia (Admin / Supervisor / Operador / Chofer)
  */
 export const updateReportStatus = async (req, res) => {
   try {
@@ -404,6 +488,53 @@ export const updateReportStatus = async (req, res) => {
     const validStatuses = ['PENDIENTE', 'EN_PROCESO', 'RESUELTO', 'RECHAZADO'];
     if (status && !validStatuses.includes(status)) {
       return errorResponse(res, `Estado inválido. Opciones válidas: ${validStatuses.join(', ')}`, null, 400);
+    }
+
+    // Validación de pertenencia para el rol 'chofer'
+    const userRole = req.user?.app_metadata?.role || req.user?.user_metadata?.role || 'citizen';
+    if (userRole === 'chofer') {
+      // 1. Obtener la denuncia actual
+      let currentReport = null;
+      try {
+        const { data, error } = await supabase
+          .from('reports')
+          .select('id, assigned_truck_id, status')
+          .eq('id', id)
+          .single();
+        if (!error && data) currentReport = data;
+      } catch (e) {}
+
+      if (!currentReport) {
+        currentReport = LOCAL_REPORTS.find(r => r.id === id);
+      }
+
+      if (!currentReport) {
+        return errorResponse(res, 'Denuncia no encontrada', null, 404);
+      }
+
+      // 2. Obtener el camión asignado al chofer
+      let userTruck = null;
+      try {
+        const { data, error } = await supabase
+          .from('trucks')
+          .select('id, code')
+          .eq('assigned_user_id', req.user?.id)
+          .maybeSingle();
+        if (!error && data) userTruck = data;
+      } catch (e) {}
+
+      if (!userTruck) {
+        return errorResponse(res, 'Acceso denegado: No tienes ningún camión asignado', null, 403);
+      }
+
+      if (currentReport.assigned_truck_id !== userTruck.id && currentReport.assigned_truck_id !== userTruck.code) {
+        return errorResponse(
+          res,
+          'Acceso denegado: Solo puedes resolver o actualizar denuncias asignadas a tu camión',
+          null,
+          403
+        );
+      }
     }
 
     const updates = {};

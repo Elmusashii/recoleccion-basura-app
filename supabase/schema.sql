@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 CREATE TYPE report_status AS ENUM ('PENDIENTE', 'EN_PROCESO', 'RESUELTO', 'RECHAZADO');
 CREATE TYPE report_category AS ENUM ('VERTEDERO_CLANDESTINO', 'RECOLECCION_PENDIENTE', 'CONTENEDOR_DANADO', 'OTROS');
 CREATE TYPE truck_status AS ENUM ('DISPONIBLE', 'EN_RUTA', 'EN_MANTENIMIENTO', 'FUERA_DE_SERVICIO');
-CREATE TYPE fleet_action AS ENUM ('SALIDA', 'ENTRADA');
+CREATE TYPE fleet_action AS ENUM ('SALIDA', 'ENTRADA', 'AVERIA');
 
 -- ==============================================================================
 -- 3. TABLA DE RUTAS Y HORARIOS DE RECOLECCIÓN (Zonas y Barrios de Asunción)
@@ -73,11 +73,14 @@ CREATE TABLE IF NOT EXISTS public.trucks (
     capacity_tons NUMERIC(4, 1),
     status truck_status DEFAULT 'DISPONIBLE',
     assigned_route_id UUID REFERENCES public.routes(id) ON DELETE SET NULL,
+    assigned_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL, -- Chofer municipal asignado
     current_lat DOUBLE PRECISION,
     current_lng DOUBLE PRECISION,
     last_ping TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT now()
 );
+
+CREATE INDEX IF NOT EXISTS idx_trucks_assigned_user ON public.trucks(assigned_user_id);
 
 -- ==============================================================================
 -- 6. TABLA DE CONTROL DE ENTRADA Y SALIDA (Bitácora de Flota)

@@ -1,5 +1,7 @@
+import path from 'path';
 import { supabase } from '../config/supabase.js';
 import { successResponse, errorResponse } from '../utils/response.js';
+import { isValidImageBuffer } from '../middlewares/upload.js';
 
 let LOCAL_TRUCKS = [
   { id: 'trk-01', code: 'CAM-01', plate_number: 'AABC 101', model: 'Mercedes-Benz Atego 1726', capacity_tons: 12.0, status: 'EN_RUTA', current_lat: -25.2930, current_lng: -57.5810 },
@@ -289,6 +291,257 @@ export const updateTruckLocation = async (req, res) => {
     return successResponse(res, 'Ubicación de camión actualizada', { id, latitude: lat, longitude: lng });
   } catch (err) {
     return errorResponse(res, 'Error al procesar GPS de camión', err, 500);
+  }
+};
+
+/**
+ * Asignar o desasignar un chofer a un camión (Admin / Supervisor)
+ * PUT /api/fleet/trucks/:id/assign-driver
+ * Body: { userId: string | null }
+ */
+export const assignDriverToTruck = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req.body;
+
+    const assignedUserId = userId && typeof userId === 'string' && userId.trim() ? userId.trim() : null;
+
+    let updatedTruck = null;
+
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let query = supabase
+        .from('trucks')
+        .update({ assigned_user_id: assignedUserId })
+        .select('*, routes(name, zone)');
+
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('code', id);
+      }
+
+      const { data, error } = await query.single();
+      if (!error && data) {
+        updatedTruck = data;
+      } else if (error) {
+        console.warn('Error al asignar chofer en Supabase:', error.message);
+      }
+    } catch (dbErr) {
+      console.warn('Supabase DB error en assignDriverToTruck:', dbErr.message);
+    }
+
+    if (!updatedTruck) {
+      const tIdx = LOCAL_TRUCKS.findIndex(t => t.id === id || t.code === id);
+      if (tIdx !== -1) {
+        LOCAL_TRUCKS[tIdx].assigned_user_id = assignedUserId;
+        updatedTruck = LOCAL_TRUCKS[tIdx];
+      }
+    }
+
+    if (!updatedTruck) {
+      return errorResponse(res, 'Camión no encontrado para asignar chofer', null, 404);
+    }
+
+    const msg = assignedUserId
+      ? 'Chofer asignado al camión exitosamente'
+      : 'Camión desasignado correctamente';
+
+    return successResponse(res, msg, updatedTruck);
+  } catch (err) {
+    return errorResponse(res, 'Error al asignar chofer al camión', err, 500);
+  }
+};
+
+/**
+ * Obtener el camión asignado al usuario logueado
+ * GET /api/fleet/my-truck
+ */
+export const getMyTruck = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return errorResponse(res, 'Usuario no autenticado', null, 401);
+    }
+
+    let myTruck = null;
+
+    try {
+      const { data, error } = await supabase
+        .from('trucks')
+        .select('*, routes(name, zone, shift, schedule_days, start_time, end_time)')
+        .eq('assigned_user_id', userId)
+        .maybeSingle();
+
+      if (!error && data) {
+        myTruck = data;
+      }
+    } catch (dbErr) {
+      console.warn('DB error en getMyTruck:', dbErr.message);
+    }
+
+    if (!myTruck) {
+      myTruck = LOCAL_TRUCKS.find(t => t.assigned_user_id === userId) || null;
+    }
+
+    if (!myTruck) {
+      return successResponse(res, 'No tenés un camión asignado, contactá a tu supervisor', null);
+    }
+
+    return successResponse(res, 'Camión asignado obtenido exitosamente', myTruck);
+  } catch (err) {
+    return errorResponse(res, 'Error al consultar camión del usuario', err, 500);
+  }
+};
+
+/**
+ * Reportar una avería o problema mecánico en el camión asignado
+ * POST /api/fleet/trucks/:id/report-issue
+ * Body: { issueType: string, description: string } (con foto opcional)
+ */
+export const reportTruckIssue = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id;
+    const { issueType, description } = req.body;
+
+    if (!userId) {
+      return errorResponse(res, 'Usuario no autenticado', null, 401);
+    }
+
+    // 1. Obtener y validar pertenencia del camión
+    let targetTruck = null;
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let query = supabase.from('trucks').select('*');
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('code', id);
+      }
+      const { data, error } = await query.single();
+      if (!error && data) {
+        targetTruck = data;
+      }
+    } catch (dbErr) {
+      console.warn('DB error buscando camión:', dbErr.message);
+    }
+
+    if (!targetTruck) {
+      targetTruck = LOCAL_TRUCKS.find(t => t.id === id || t.code === id);
+    }
+
+    if (!targetTruck) {
+      return errorResponse(res, 'Camión no encontrado', null, 404);
+    }
+
+    // Validar que el camión esté asignado a este usuario
+    if (targetTruck.assigned_user_id !== userId) {
+      return errorResponse(
+        res,
+        'Acceso denegado: Solo puedes reportar averías en el camión que tienes asignado',
+        null,
+        403
+      );
+    }
+
+    // 2. Procesar fotografía opcional si viene adjunta
+    let photoUrl = null;
+    if (req.file) {
+      if (!isValidImageBuffer(req.file.buffer)) {
+        return errorResponse(res, 'El archivo adjunto no es una imagen válida o está dañado.', null, 400);
+      }
+
+      const ext = path.extname(req.file.originalname).toLowerCase() || '.jpg';
+      const fileName = `issues/${Date.now()}-${targetTruck.code || 'cam'}${ext}`;
+
+      try {
+        const { error: uploadError } = await supabase.storage
+          .from('denuncias-fotos')
+          .upload(fileName, req.file.buffer, {
+            contentType: req.file.mimetype || 'image/jpeg',
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (!uploadError) {
+          const { data: publicUrlData } = supabase.storage
+            .from('denuncias-fotos')
+            .getPublicUrl(fileName);
+          photoUrl = publicUrlData?.publicUrl || null;
+        } else {
+          console.warn('Error subiendo foto de avería a Supabase Storage:', uploadError.message);
+        }
+      } catch (uploadErr) {
+        console.warn('Fallo en subida de imagen de avería:', uploadErr.message);
+      }
+    }
+
+    // 3. Registrar en fleet_logs
+    const driverName = req.user.user_metadata?.name || req.user.email || 'Chofer Municipal';
+    const notesText = `[AVERÍA - ${issueType || 'MECÁNICA'}] ${description || 'Sin detalles'}${photoUrl ? ` | Foto: ${photoUrl}` : ''}`;
+
+    const logPayload = {
+      truck_id: targetTruck.id,
+      driver_name: driverName,
+      action: 'AVERIA',
+      odometer_km: targetTruck.odometer_km || 0,
+      fuel_level_percent: 100,
+      waste_weight_kg: 0,
+      notes: notesText,
+      timestamp: new Date().toISOString()
+    };
+
+    let savedLog = null;
+    try {
+      const { data, error } = await supabase
+        .from('fleet_logs')
+        .insert([logPayload])
+        .select('*, trucks(code, plate_number, model)')
+        .single();
+      if (!error && data) {
+        savedLog = data;
+      }
+    } catch (logErr) {
+      console.warn('Error insertando fleet_log de avería:', logErr.message);
+    }
+
+    if (!savedLog) {
+      savedLog = {
+        id: `log-${Date.now().toString().slice(-4)}`,
+        ...logPayload,
+        trucks: { code: targetTruck.code, plate_number: targetTruck.plate_number }
+      };
+      LOCAL_FLEET_LOGS.unshift(savedLog);
+    }
+
+    // 4. Actualizar status del camión a 'FUERA_DE_SERVICIO'
+    const newStatus = 'FUERA_DE_SERVICIO';
+    try {
+      await supabase
+        .from('trucks')
+        .update({ status: newStatus })
+        .eq('id', targetTruck.id);
+    } catch (updateErr) {
+      console.warn('Error actualizando estado del camión averiado:', updateErr.message);
+    }
+
+    targetTruck.status = newStatus;
+    const localT = LOCAL_TRUCKS.find(t => t.id === targetTruck.id);
+    if (localT) localT.status = newStatus;
+
+    return successResponse(
+      res,
+      'Avería reportada exitosamente. La unidad ha sido marcada como FUERA DE SERVICIO.',
+      {
+        log: savedLog,
+        truck: { ...targetTruck, status: newStatus },
+        photoUrl
+      },
+      201
+    );
+  } catch (err) {
+    return errorResponse(res, 'Error al procesar el reporte de avería', err, 500);
   }
 };
 

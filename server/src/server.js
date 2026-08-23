@@ -3,6 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
 
 import routesRoutes from './routes/routes.routes.js';
@@ -12,6 +14,10 @@ import usersRoutes from './routes/users.routes.js';
 import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
 
 // Cargar variables de entorno
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 dotenv.config();
 
 const app = express();

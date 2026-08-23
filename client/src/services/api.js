@@ -53,11 +53,22 @@ export const ReportsAPI = {
   getByTicket: (ticket) => api.get(`/reports/ticket/${ticket}`),
   getHeatmap: () => api.get('/reports/heatmap'),
   getWeeklyStats: () => api.get('/reports/stats/weekly'),
+  getAssignedToMe: () => api.get('/reports/assigned-to-me'),
   updateStatus: (id, data) => api.patch(`/reports/${id}/status`, data)
 };
 
 export const FleetAPI = {
   getTrucks: () => api.get('/fleet/trucks'),
+  getMyTruck: () => api.get('/fleet/my-truck'),
+  assignDriver: (truckId, userId) => api.put(`/fleet/trucks/${truckId}/assign-driver`, { userId }),
+  reportIssue: (truckId, data) => {
+    if (data instanceof FormData) {
+      return api.post(`/fleet/trucks/${truckId}/report-issue`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+    }
+    return api.post(`/fleet/trucks/${truckId}/report-issue`, data);
+  },
   createTruck: (data) => api.post('/fleet/trucks', data),
   getLogs: (params) => api.get('/fleet/logs', { params }),
   createLog: (data) => api.post('/fleet/logs', data),
