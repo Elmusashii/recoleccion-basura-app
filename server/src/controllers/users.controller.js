@@ -150,6 +150,21 @@ export const createUser = async (req, res) => {
           created_at: data.user.created_at,
           last_sign_in_at: null
         };
+
+        // Sincronización directa a profiles
+        try {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            email: data.user.email,
+            name,
+            role: role || 'operator',
+            department: department || 'Dirección General de Servicios Urbanos',
+            phone: phone || '',
+            status: 'ACTIVO'
+          });
+        } catch (pErr) {
+          console.warn('Upsert directo a profiles en createUser:', pErr.message);
+        }
       } else if (error) {
         return errorResponse(res, error.message || 'Error al crear usuario en Supabase', error, 400);
       }
@@ -216,6 +231,20 @@ export const updateUser = async (req, res) => {
           created_at: data.user.created_at,
           last_sign_in_at: data.user.last_sign_in_at
         };
+
+        // Sincronización directa a profiles
+        try {
+          const profileUpdates = { id };
+          if (name) profileUpdates.name = name;
+          if (role) profileUpdates.role = role;
+          if (department) profileUpdates.department = department;
+          if (status) profileUpdates.status = status;
+          if (phone) profileUpdates.phone = phone;
+          profileUpdates.updated_at = new Date().toISOString();
+          await supabase.from('profiles').upsert(profileUpdates);
+        } catch (pErr) {
+          console.warn('Upsert directo a profiles en updateUser:', pErr.message);
+        }
       }
     } catch (dbErr) {
       console.warn('Fallback al actualizar usuario');
@@ -255,6 +284,11 @@ export const deleteUser = async (req, res) => {
 
     try {
       await supabase.auth.admin.deleteUser(id);
+      try {
+        await supabase.from('profiles').delete().eq('id', id);
+      } catch (pErr) {
+        console.warn('Delete de profile:', pErr.message);
+      }
     } catch (dbErr) {
       console.warn('Fallback al eliminar usuario');
     }

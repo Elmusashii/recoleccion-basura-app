@@ -3,14 +3,24 @@
 @tailwind utilities;
 
 @layer base {
-  html, body {
-    @apply bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-white;
+
+  html,
+  body {
+    background-color: #fafafa;
+    color: #111111;
     height: 100%;
     height: 100dvh;
     width: 100%;
     overscroll-behavior: none;
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  .dark html,
+  .dark body {
+    background-color: #090d16;
+    color: #f8fafc;
   }
 
   #root {
@@ -18,90 +28,149 @@
     height: 100dvh;
     width: 100%;
     overflow: hidden;
+    background-color: #fafafa;
+    color: #111111;
+  }
+
+  .dark #root {
+    background-color: #090d16;
+    color: #f8fafc;
   }
 }
 
-/* Custom Glassmorphism Styles */
-.glass-panel {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Monochrome Surfaces */
+.monochrome-panel {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.125rem;
 }
 
-.glass-card {
-  background: rgba(30, 41, 59, 0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+.dark .monochrome-panel {
+  background: #020617;
+  border: 1px solid #1e293b;
 }
 
-/* Leaflet Overrides */
+.monochrome-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.125rem;
+}
+
+.dark .monochrome-card {
+  background: #020617;
+  border: 1px solid #1e293b;
+}
+
+/* Leaflet Monochrome Minimalist Theme */
 .leaflet-container {
   width: 100%;
   height: 100%;
-  border-radius: 0.75rem;
+  border-radius: 0.125rem;
   z-index: 10;
-  background-color: #0f172a !important;
+  background-color: #fafafa !important;
+}
+
+.dark .leaflet-container {
+  background-color: #090d16 !important;
 }
 
 .leaflet-popup-content-wrapper {
   background: #ffffff !important;
-  color: #0f172a !important;
-  border-radius: 1rem !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
-  padding: 4px !important;
+  color: #111111 !important;
+  border-radius: 0.125rem !important;
+  border: 1px solid #111111 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  padding: 2px !important;
 }
 
 .leaflet-popup-tip {
   background: #ffffff !important;
+  border: 1px solid #111111 !important;
+}
+
+.dark .leaflet-popup-content-wrapper {
+  background: #020617 !important;
+  color: #f8fafc !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark .leaflet-popup-tip {
+  background: #020617 !important;
+  border: 1px solid #334155 !important;
 }
 
 .leaflet-container a.leaflet-popup-close-button {
-  color: #64748b !important;
-  padding: 8px 8px 0 0 !important;
-  font-size: 16px !important;
+  color: #666666 !important;
+  padding: 6px 6px 0 0 !important;
+  font-size: 14px !important;
+}
+
+.dark .leaflet-container a.leaflet-popup-close-button {
+  color: #94a3b8 !important;
 }
 
 .leaflet-container a.leaflet-popup-close-button:hover {
-  color: #0f172a !important;
+  color: #111111 !important;
 }
 
-/* Custom Scrollbar */
+.dark .leaflet-container a.leaflet-popup-close-button:hover {
+  color: #f8fafc !important;
+}
+
+/* Custom Scrollbar (Grayscale) */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #fafafa;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #090d16;
 }
 
 ::-webkit-scrollbar-thumb {
+  background: #cccccc;
+  border-radius: 2px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
   background: #334155;
-  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b981;
+  background: #999999;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 /* Tooltip y Labels de Barrios en el Mapa */
 .barrio-map-label {
-  background: rgba(15, 23, 42, 0.88) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  border-radius: 0.5rem !important;
-  font-size: 11px !important;
-  font-weight: 700 !important;
-  padding: 3px 8px !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: 1px solid #111111 !important;
+  border-radius: 0.125rem !important;
+  font-size: 10px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-weight: 600 !important;
+  padding: 2px 4px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
   white-space: nowrap !important;
   pointer-events: none !important;
+}
+
+.dark .barrio-map-label {
+  background: #020617 !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
 .barrio-map-label::before {
   display: none !important;
 }
-

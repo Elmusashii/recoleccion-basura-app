@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS public.trucks (
     capacity_tons NUMERIC(4, 1),
     status truck_status DEFAULT 'DISPONIBLE',
     assigned_route_id UUID REFERENCES public.routes(id) ON DELETE SET NULL,
-    assigned_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL, -- Chofer municipal asignado
+    assigned_user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL, -- Chofer municipal asignado (perfil)
     current_lat DOUBLE PRECISION,
     current_lng DOUBLE PRECISION,
     last_ping TIMESTAMPTZ,
@@ -136,12 +136,19 @@ FOR SELECT
 TO anon, authenticated 
 USING (true);
 
--- Denuncias: Edición / Resolución solo para administradores autenticados
-CREATE POLICY "Administradores pueden actualizar denuncias" 
+-- Denuncias: Edición / Resolución solo para personal autorizado (admin, supervisor, chofer, operator)
+CREATE POLICY "Personal autorizado puede actualizar denuncias" 
 ON public.reports 
 FOR UPDATE 
 TO authenticated 
-USING (true)
+USING (
+  COALESCE((auth.jwt() -> 'app_metadata' ->> 'role'), (auth.jwt() -> 'user_metadata' ->> 'role')) IN ('admin', 'supervisor', 'chofer', 'operator')
+  OR EXISTS (
+    SELECT 1 FROM public.profiles 
+    WHERE profiles.id = auth.uid() 
+      AND profiles.role IN ('admin', 'supervisor', 'chofer', 'operator')
+  )
+)
 WITH CHECK (true);
 
 -- Flota y Bitácora: Solo administradores / operadores autenticados
@@ -195,8 +202,69 @@ TO authenticated
 USING (true) 
 WITH CHECK (true);
 
+-- Función y trigger de sincronización automática de profiles con auth.users
+CREATE OR REPLACE FUNCTION public.sync_profile_on_user_change()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, name, role, phone, department, status)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'name', split_part(NEW.email, '@', 1)),
+    COALESCE(NEW.raw_app_meta_data->>'role', NEW.raw_user_meta_data->>'role', 'operator'),
+    COALESCE(NEW.raw_user_meta_data->>'phone', ''),
+    COALESCE(NEW.raw_user_meta_data->>'department', 'Dirección General de Servicios Urbanos'),
+    COALESCE(NEW.raw_user_meta_data->>'status', 'ACTIVO')
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    email      = EXCLUDED.email,
+    name       = EXCLUDED.name,
+    role       = EXCLUDED.role,
+    phone      = EXCLUDED.phone,
+    department = EXCLUDED.department,
+    status     = EXCLUDED.status,
+    updated_at = now();
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_upsert ON auth.users;
+CREATE TRIGGER on_auth_user_upsert
+  AFTER INSERT OR UPDATE ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.sync_profile_on_user_change();
+
 -- ==============================================================================
 -- 9. STORAGE BUCKET PARA FOTOS DE DENUNCIAS
 -- ==============================================================================
 -- En el panel de Supabase Storage, crear el bucket: 'denuncias-fotos' (Público)
 -- Política de Storage: Insert para anon y authenticated, Select para todos.
+
+-- ==============================================================================
+-- 10. TABLA INTERMEDIA: ASIGNACIÓN DE CIRCUITOS DE RUTAS A CAMIONES (N:M)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.truck_routes (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    truck_id UUID NOT NULL REFERENCES public.trucks(id) ON DELETE CASCADE,
+    route_id UUID NOT NULL REFERENCES public.routes(id) ON DELETE CASCADE,
+    assigned_at TIMESTAMPTZ DEFAULT now(),
+    assigned_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    UNIQUE(truck_id, route_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_truck_routes_truck ON public.truck_routes(truck_id);
+CREATE INDEX IF NOT EXISTS idx_truck_routes_route ON public.truck_routes(route_id);
+
+ALTER TABLE public.truck_routes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Lectura pública de rutas asignadas a camiones" 
+ON public.truck_routes 
+FOR SELECT 
+TO anon, authenticated 
+USING (true);
+
+CREATE POLICY "Gestión administrativa de rutas de camiones" 
+ON public.truck_routes 
+FOR ALL 
+TO authenticated 
+USING (true) 
+WITH CHECK (true);

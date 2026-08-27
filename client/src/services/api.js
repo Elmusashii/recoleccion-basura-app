@@ -28,6 +28,33 @@ api.interceptors.request.use(async (config) => {
   return Promise.reject(error);
 });
 
+// Interceptor para reintentos automáticos EXCLUSIVAMENTE en peticiones GET (para conexiones móviles 3G/Edge)
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const config = error.config;
+
+    // Regla estricta: NO reintentar si no es GET (POST, PUT, PATCH, DELETE jamás se reintentan para evitar duplicaciones)
+    if (!config || config.method?.toLowerCase() !== 'get') {
+      return Promise.reject(error);
+    }
+
+    // Permitir hasta 2 reintentos con backoff simple
+    const MAX_RETRIES = 2;
+    config.__retryCount = config.__retryCount || 0;
+
+    if (config.__retryCount < MAX_RETRIES) {
+      config.__retryCount += 1;
+      const delayMs = config.__retryCount * 1000;
+      console.warn(`[Axios Retry] Reintentando GET ${config.url} (intento ${config.__retryCount}/${MAX_RETRIES}) tras ${delayMs}ms...`);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return api(config);
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 // Métodos de API
 export const RoutesAPI = {
   getAll: (params) => api.get('/routes', { params }),
@@ -54,12 +81,20 @@ export const ReportsAPI = {
   getHeatmap: () => api.get('/reports/heatmap'),
   getWeeklyStats: () => api.get('/reports/stats/weekly'),
   getAssignedToMe: () => api.get('/reports/assigned-to-me'),
+  getNearestTrucks: (reportId) => api.post(`/reports/${reportId}/nearest-trucks`),
   updateStatus: (id, data) => api.patch(`/reports/${id}/status`, data)
 };
 
 export const FleetAPI = {
   getTrucks: () => api.get('/fleet/trucks'),
+  getTruckRoute: (truckId) => api.get(`/fleet/trucks/${truckId}/route`),
+  getTruckRoutes: (truckId) => api.get(`/fleet/trucks/${truckId}/routes`),
+  getAvailableRoutesForTruck: (params) => api.get('/fleet/routes/available-for-truck', { params }),
+  updateTruckRoutes: (truckId, routeIds) => api.put(`/fleet/trucks/${truckId}/routes`, { routeIds }),
   getMyTruck: () => api.get('/fleet/my-truck'),
+  getMyRoutes: () => api.get('/fleet/my-routes'),
+  getAvailableDrivers: (excludeTruckId) =>
+    api.get('/fleet/available-drivers', { params: excludeTruckId ? { excludeTruckId } : undefined }),
   assignDriver: (truckId, userId) => api.put(`/fleet/trucks/${truckId}/assign-driver`, { userId }),
   reportIssue: (truckId, data) => {
     if (data instanceof FormData) {
@@ -70,6 +105,7 @@ export const FleetAPI = {
     return api.post(`/fleet/trucks/${truckId}/report-issue`, data);
   },
   createTruck: (data) => api.post('/fleet/trucks', data),
+  resetMaintenance: (id) => api.patch(`/fleet/trucks/${id}/maintenance`),
   getLogs: (params) => api.get('/fleet/logs', { params }),
   createLog: (data) => api.post('/fleet/logs', data),
   updateLocation: (id, coords) => api.patch(`/fleet/trucks/${id}/location`, coords)

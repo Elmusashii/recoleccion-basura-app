@@ -4,10 +4,10 @@
  */
 
 export const OFFICIAL_PALETTE = {
-  MANANA: '#4ade80',  // Verde (06:00 - 12:00)
-  TARDE: '#f97316',   // Naranja / Salmón (12:00 - 18:00)
-  NOCHE: '#475569',   // Gris oscuro / Azul pizarra (19:00 - 02:00)
-  NEUTRO: '#e2e8f0',  // Neutro / Fuera de filtro
+  MANANA: '#22c55e',  // Verde natural sobrio (06:00 - 12:00)
+  TARDE: '#f97316',   // Naranja templado (12:00 - 18:00)
+  NOCHE: '#475569',   // Pizarra / Slate neutro (19:00 - 02:00)
+  NEUTRO: '#94a3b8',  // Neutro / Fuera de filtro
   BORDER_NEUTRO: '#94a3b8',
   BORDER_SOLID: '#ffffff'
 };

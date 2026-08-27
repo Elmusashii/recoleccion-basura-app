@@ -1,6 +1,7 @@
 import { supabase } from '../config/supabase.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 import { isValidImageBuffer } from '../middlewares/upload.js';
+import { getDistanceMatrix } from '../services/ors.service.js';
 
 /**
  * Base de datos en memoria para denuncias (Modo fallback/offline)
@@ -281,6 +282,35 @@ export const createReport = async (req, res) => {
       return errorResponse(res, 'La descripción y las coordenadas geográficas son obligatorias', null, 400);
     }
 
+    const parsedLat = parseFloat(latitude);
+    const parsedLng = parseFloat(longitude);
+
+    if (isNaN(parsedLat) || isNaN(parsedLng)) {
+      return errorResponse(res, 'Las coordenadas geográficas proporcionadas son inválidas.', null, 400);
+    }
+
+    // Bounding Box oficial de la jurisdicción de la Ciudad de Asunción
+    const ASUNCION_BBOX = {
+      minLat: -25.40,
+      maxLat: -25.18,
+      minLng: -57.72,
+      maxLng: -57.48
+    };
+
+    if (
+      parsedLat < ASUNCION_BBOX.minLat ||
+      parsedLat > ASUNCION_BBOX.maxLat ||
+      parsedLng < ASUNCION_BBOX.minLng ||
+      parsedLng > ASUNCION_BBOX.maxLng
+    ) {
+      return errorResponse(
+        res,
+        'Ubicación fuera de rango: Las coordenadas se encuentran fuera de la jurisdicción del municipio de Asunción.',
+        null,
+        400
+      );
+    }
+
     // Normalizar arreglo de URLs de fotos
     let formattedPhotos = [];
     if (Array.isArray(photo_urls)) {
@@ -307,8 +337,8 @@ export const createReport = async (req, res) => {
       category: category || 'VERTEDERO_CLANDESTINO',
       description,
       address_reference: address_reference || (barrio ? `Barrio ${barrio}` : ''),
-      latitude: parseFloat(latitude),
-      longitude: parseFloat(longitude),
+      latitude: parsedLat,
+      longitude: parsedLng,
       photo_urls: formattedPhotos,
       status: 'PENDIENTE',
       created_at: new Date().toISOString(),
@@ -318,6 +348,8 @@ export const createReport = async (req, res) => {
 
     let savedReport = null;
 
+    console.log('[DEBUG Backend createReport] newReportPayload:', JSON.stringify(newReportPayload, null, 2));
+
     // 1. Guardar en Supabase PostgreSQL
     try {
       const { data, error } = await supabase
@@ -326,14 +358,16 @@ export const createReport = async (req, res) => {
         .select()
         .single();
 
+      console.log('[DEBUG Backend createReport] Supabase response - data:', JSON.stringify(data), 'error:', error ? JSON.stringify(error, null, 2) : null);
+
       if (!error && data) {
         savedReport = data;
-        console.log(`✅ Denuncia ${ticket_number} guardada en Supabase con ${formattedPhotos.length} fotos.`);
+        console.log(`✅ Denuncia ${ticket_number} guardada en Supabase con ID: ${data.id}`);
       } else if (error) {
-        console.error('Error al insertar en Supabase reports:', error);
+        console.error('❌ [ERROR Backend createReport] Error al insertar en Supabase reports:', error);
       }
     } catch (dbErr) {
-      console.warn('Supabase DB no disponible. Guardando en memoria local:', dbErr);
+      console.warn('❌ [EXCEPTION Backend createReport] Supabase DB exception:', dbErr);
     }
 
     // 2. Si no hay Supabase o falló, guardar en la base local en memoria
@@ -343,6 +377,7 @@ export const createReport = async (req, res) => {
         ...newReportPayload
       };
       LOCAL_REPORTS.unshift(savedReport);
+      console.log('⚠️ [FALLBACK Backend createReport] Denuncia guardada en LOCAL_REPORTS en memoria:', savedReport.id);
     }
 
     return successResponse(
@@ -485,9 +520,17 @@ export const updateReportStatus = async (req, res) => {
     const { id } = req.params;
     const { status, admin_notes, assigned_truck_id, photo_urls } = req.body;
 
+    console.log('[DEBUG Backend updateReportStatus] Received request params id:', id, 'body:', JSON.stringify(req.body));
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    console.log('[DEBUG Backend updateReportStatus] Parsed isUUID:', isUUID, 'id:', id);
+
+    if (!id) {
+      return errorResponse(res, 'ID o Ticket de la denuncia requerido', null, 400);
+    }
+
     const validStatuses = ['PENDIENTE', 'EN_PROCESO', 'RESUELTO', 'RECHAZADO'];
     if (status && !validStatuses.includes(status)) {
-      return errorResponse(res, `Estado inválido. Opciones válidas: ${validStatuses.join(', ')}`, null, 400);
+      return errorResponse(res, `Estado inválido. Opciones: ${validStatuses.join(', ')}`, null, 400);
     }
 
     // Validación de pertenencia para el rol 'chofer'
@@ -496,16 +539,20 @@ export const updateReportStatus = async (req, res) => {
       // 1. Obtener la denuncia actual
       let currentReport = null;
       try {
-        const { data, error } = await supabase
+        let q = supabase
           .from('reports')
-          .select('id, assigned_truck_id, status')
-          .eq('id', id)
-          .single();
+          .select('id, ticket_number, assigned_truck_id, status');
+        if (isUUID) {
+          q = q.eq('id', id);
+        } else {
+          q = q.eq('ticket_number', id);
+        }
+        const { data, error } = await q.maybeSingle();
         if (!error && data) currentReport = data;
       } catch (e) {}
 
       if (!currentReport) {
-        currentReport = LOCAL_REPORTS.find(r => r.id === id);
+        currentReport = LOCAL_REPORTS.find(r => r.id === id || r.ticket_number === id);
       }
 
       if (!currentReport) {
@@ -540,7 +587,17 @@ export const updateReportStatus = async (req, res) => {
     const updates = {};
     if (status) updates.status = status;
     if (admin_notes !== undefined) updates.admin_notes = admin_notes;
-    if (assigned_truck_id !== undefined) updates.assigned_truck_id = assigned_truck_id;
+    
+    if (assigned_truck_id !== undefined && assigned_truck_id !== null && assigned_truck_id !== '') {
+      const isTruckUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(assigned_truck_id);
+      if (!isTruckUUID) {
+        return errorResponse(res, `ID de camión inválido: "${assigned_truck_id}" no es un UUID válido.`, null, 400);
+      }
+      updates.assigned_truck_id = assigned_truck_id;
+    } else if (assigned_truck_id === null || assigned_truck_id === '') {
+      updates.assigned_truck_id = null;
+    }
+
     if (photo_urls !== undefined) {
       if (Array.isArray(photo_urls)) {
         updates.photo_urls = photo_urls;
@@ -553,23 +610,45 @@ export const updateReportStatus = async (req, res) => {
     let updatedReport = null;
 
     try {
-      const { data, error } = await supabase
-        .from('reports')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single();
+      let query = supabase.from('reports').update(updates);
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('ticket_number', id);
+      }
+
+      // Bloqueo de concurrencia para asignaciones a EN_PROCESO
+      if (status === 'EN_PROCESO') {
+        query = query.eq('status', 'PENDIENTE');
+      }
+
+      const { data, error } = await query.select().maybeSingle();
 
       if (!error && data) {
         updatedReport = data;
+      } else if (!error && !data && status === 'EN_PROCESO') {
+        return errorResponse(
+          res,
+          'Conflicto: La denuncia ya fue tomada por otro operador o su estado fue modificado.',
+          null,
+          409
+        );
       }
     } catch (dbErr) {
-      // Fallback
+      console.warn('Fallback en updateReportStatus:', dbErr.message);
     }
 
-    if (!updatedReport) {
-      const index = LOCAL_REPORTS.findIndex(r => r.id === id);
+    if (!updatedReport && Array.isArray(LOCAL_REPORTS)) {
+      const index = LOCAL_REPORTS.findIndex(r => r.id === id || r.ticket_number === id);
       if (index !== -1) {
+        if (status === 'EN_PROCESO' && LOCAL_REPORTS[index].status !== 'PENDIENTE') {
+          return errorResponse(
+            res,
+            'Conflicto: La denuncia ya fue tomada por otro operador o su estado fue modificado.',
+            null,
+            409
+          );
+        }
         LOCAL_REPORTS[index] = { ...LOCAL_REPORTS[index], ...updates };
         updatedReport = LOCAL_REPORTS[index];
       }
@@ -626,5 +705,161 @@ export const getWeeklyReportStats = async (req, res) => {
     });
   } catch (err) {
     return errorResponse(res, 'Error al consultar estadísticas semanales', err, 500);
+  }
+};
+
+/**
+ * Obtener los camiones disponibles/en ruta más cercanos a una denuncia usando ORS Distance Matrix
+ * POST /api/reports/:id/nearest-trucks
+ */
+export const getNearestTrucksForReport = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return errorResponse(res, 'ID de denuncia requerido', null, 400);
+    }
+
+    // 1. Buscar la denuncia para obtener sus coordenadas geográficas
+    let report = null;
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+    try {
+      let query = supabase.from('reports').select('*');
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('ticket_number', id);
+      }
+      const { data, error } = await query.maybeSingle();
+      if (!error && data) {
+        report = data;
+      }
+    } catch (dbErr) {
+      console.warn('Error consultando denuncia para nearest-trucks en Supabase:', dbErr.message);
+    }
+
+    if (!report) {
+      report = LOCAL_REPORTS.find(r => r.id === id || r.ticket_number === id);
+    }
+
+    if (!report) {
+      return errorResponse(res, 'Denuncia no encontrada', null, 404);
+    }
+
+    const reportLat = parseFloat(report.latitude);
+    const reportLng = parseFloat(report.longitude);
+
+    if (isNaN(reportLat) || isNaN(reportLng)) {
+      return errorResponse(res, 'La denuncia no cuenta con coordenadas geográficas válidas', null, 400);
+    }
+
+    // 2. Obtener camiones operativos (DISPONIBLE o EN_RUTA) de Supabase
+    let candidateTrucks = [];
+    try {
+      const { data: trucksData, error: trucksErr } = await supabase
+        .from('trucks')
+        .select('*')
+        .in('status', ['DISPONIBLE', 'EN_RUTA']);
+
+      if (!trucksErr && trucksData && trucksData.length > 0) {
+        // Enriquecer con nombres de choferes desde la tabla profiles
+        const userIds = trucksData.map(t => t.assigned_user_id).filter(Boolean);
+        const profilesMap = {};
+        if (userIds.length > 0) {
+          try {
+            const { data: profilesData } = await supabase
+              .from('profiles')
+              .select('id, name')
+              .in('id', userIds);
+            if (profilesData) {
+              profilesData.forEach(p => {
+                profilesMap[p.id] = p.name;
+              });
+            }
+          } catch (pErr) {
+            console.warn('No se pudieron consultar perfiles de choferes:', pErr.message);
+          }
+        }
+
+        candidateTrucks = trucksData.map(t => ({
+          ...t,
+          driver_name: profilesMap[t.assigned_user_id] || 'Chofer Municipal'
+        }));
+      } else if (trucksErr) {
+        console.warn('Error consultando camiones para nearest-trucks en Supabase:', trucksErr.message);
+      }
+    } catch (dbErr) {
+      console.warn('Error en getNearestTrucksForReport al consultar DB:', dbErr.message);
+    }
+
+    if (candidateTrucks.length === 0) {
+      return successResponse(res, 'No hay camiones operativos disponibles en este momento', {
+        reportId: report.id,
+        ticketNumber: report.ticket_number,
+        reportLocation: {
+          lat: reportLat,
+          lng: reportLng,
+          address: report.address_reference
+        },
+        nearestTrucks: []
+      });
+    }
+
+    // Filtrar camiones que tengan coordenadas válidas
+    const validTrucks = candidateTrucks.map(t => ({
+      id: t.id,
+      code: t.code,
+      plate_number: t.plate_number || t.plate || 'S/D',
+      model: t.model || 'Camión Recolector',
+      capacity_tons: t.capacity_tons || 12.0,
+      status: t.status || 'DISPONIBLE',
+      driver_name: t.driver_name || 'Chofer Municipal',
+      lat: t.current_lat ?? t.lat ?? -25.2867,
+      lng: t.current_lng ?? t.lng ?? -57.6470
+    }));
+
+    if (validTrucks.length === 0) {
+      return successResponse(res, 'No hay camiones operativos disponibles en este momento', {
+        reportId: report.id,
+        ticketNumber: report.ticket_number,
+        nearestTrucks: []
+      });
+    }
+
+    // 3. Invocar servicio de matriz de distancias ORS
+    const matrixResults = await getDistanceMatrix(validTrucks, reportLat, reportLng);
+
+    // 4. Formatear y enriquecer la lista ordenada
+    const nearestTrucks = matrixResults.map(item => {
+      const truck = item.origin;
+      return {
+        id: truck.id,
+        code: truck.code,
+        plate_number: truck.plate_number,
+        model: truck.model,
+        capacity_tons: truck.capacity_tons,
+        status: truck.status,
+        driver_name: truck.driver_name,
+        current_lat: truck.lat,
+        current_lng: truck.lng,
+        distanceMeters: item.distanceMeters,
+        durationSeconds: item.durationSeconds,
+        distanceKm: item.distanceKm,
+        durationMinutes: item.durationMinutes,
+        formattedDistance: item.distanceKm !== null ? `${item.distanceKm} km` : 'N/D',
+        formattedDuration: item.durationMinutes !== null ? `~${item.durationMinutes} min` : 'N/D',
+        isEstimate: item.isEstimate || false
+      };
+    });
+
+    return successResponse(res, 'Camiones más cercanos ordenados por distancia de manejo', {
+      reportId: report.id,
+      ticketNumber: report.ticket_number,
+      reportLocation: { lat: reportLat, lng: reportLng, address: report.address_reference },
+      nearestTrucks
+    });
+  } catch (err) {
+    return errorResponse(res, 'Error al calcular camiones cercanos a la denuncia', err, 500);
   }
 };

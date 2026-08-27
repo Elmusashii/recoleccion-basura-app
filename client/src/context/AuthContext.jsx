@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const activityEvents = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click'];
-    
+
     // Throttled handler
     let lastActivity = Date.now();
     const handleUserActivity = () => {

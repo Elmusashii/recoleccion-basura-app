@@ -61,16 +61,20 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// 2. Limitador de peticiones para prevenir abusos (DDoS / Spam de denuncias)
-const limiter = rateLimit({
+// 2. Limitador de peticiones general para prevenir abusos (DDoS / Spam de denuncias)
+const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 200, // límite de 200 peticiones por IP por ventana
+  max: 500, // límite amplio para uso normal
+  skip: (req) => {
+    // Excluir health check y consultas de rutas/telemetría de camiones que tienen su propio limiter
+    return req.path.includes('/fleet/trucks') || req.path === '/health';
+  },
   message: {
     success: false,
     message: 'Demasiadas solicitudes desde esta IP, por favor intenta nuevamente en 15 minutos.'
   }
 });
-app.use('/api/', limiter);
+app.use('/api/', generalLimiter);
 
 // 3. Ruta de Chequeo de Salud del Sistema (Health Check)
 app.get('/api/health', (req, res) => {

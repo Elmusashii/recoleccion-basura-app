@@ -8,7 +8,8 @@ import {
   updateReportStatus,
   uploadReportPhotoController,
   getWeeklyReportStats,
-  getReportsAssignedToMe
+  getReportsAssignedToMe,
+  getNearestTrucksForReport
 } from '../controllers/reports.controller.js';
 import { authenticate, requireRole } from '../middlewares/auth.js';
 import { uploadReportPhotoMiddleware } from '../middlewares/upload.js';
@@ -29,6 +30,7 @@ router.get('/assigned-to-me', authenticate, getReportsAssignedToMe);
 // Endpoints de Gestión y Moderación (Requieren Auth & Rol)
 router.get('/admin', authenticate, requireRole(['admin', 'supervisor', 'operator']), getReportsAdmin);
 router.patch('/:id/status', authenticate, requireRole(['admin', 'supervisor', 'operator', 'chofer']), updateReportStatus);
+router.post('/:id/nearest-trucks', authenticate, requireRole(['admin', 'supervisor']), getNearestTrucksForReport);
 
 export default router;
 
