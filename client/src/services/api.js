@@ -105,6 +105,8 @@ export const FleetAPI = {
     return api.post(`/fleet/trucks/${truckId}/report-issue`, data);
   },
   createTruck: (data) => api.post('/fleet/trucks', data),
+  optimizeReports: (truckId, data) => api.post(`/fleet/trucks/${truckId}/optimize-reports`, data),
+  dispatchRoute: (truckId, payload) => api.post(`/fleet/trucks/${truckId}/dispatch-route`, payload),
   resetMaintenance: (id) => api.patch(`/fleet/trucks/${id}/maintenance`),
   getLogs: (params) => api.get('/fleet/logs', { params }),
   createLog: (data) => api.post('/fleet/logs', data),
