@@ -348,8 +348,6 @@ export const createReport = async (req, res) => {
 
     let savedReport = null;
 
-    console.log('[DEBUG Backend createReport] newReportPayload:', JSON.stringify(newReportPayload, null, 2));
-
     // 1. Guardar en Supabase PostgreSQL
     try {
       const { data, error } = await supabase
@@ -357,8 +355,6 @@ export const createReport = async (req, res) => {
         .insert([newReportPayload])
         .select()
         .single();
-
-      console.log('[DEBUG Backend createReport] Supabase response - data:', JSON.stringify(data), 'error:', error ? JSON.stringify(error, null, 2) : null);
 
       if (!error && data) {
         savedReport = data;
@@ -520,9 +516,7 @@ export const updateReportStatus = async (req, res) => {
     const { id } = req.params;
     const { status, admin_notes, assigned_truck_id, photo_urls } = req.body;
 
-    console.log('[DEBUG Backend updateReportStatus] Received request params id:', id, 'body:', JSON.stringify(req.body));
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    console.log('[DEBUG Backend updateReportStatus] Parsed isUUID:', isUUID, 'id:', id);
 
     if (!id) {
       return errorResponse(res, 'ID o Ticket de la denuncia requerido', null, 400);

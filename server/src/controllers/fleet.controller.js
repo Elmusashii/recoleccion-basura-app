@@ -2,7 +2,7 @@ import path from 'path';
 import { supabase } from '../config/supabase.js';
 import { successResponse, errorResponse } from '../utils/response.js';
 import { isValidImageBuffer } from '../middlewares/upload.js';
-import { getTruckRoute } from '../services/ors.service.js';
+import { getTruckRoute, optimizeDenunciasRoute, estimateReportWeightKg } from '../services/ors.service.js';
 import { getZoneCentroid } from '../utils/geo.js';
 import { OFFICIAL_ROUTES } from '../data/officialRoutes.js';
 
@@ -374,23 +374,74 @@ export const getFleetLogs = async (req, res) => {
 };
 
 /**
- * Actualizar telemetría GPS del camión
+ * Actualizar telemetría GPS del camión (Admin, Supervisor o Chofer asignado)
+ * PATCH /api/fleet/trucks/:id/location
  */
 export const updateTruckLocation = async (req, res) => {
   try {
     const { id } = req.params;
     const { latitude, longitude } = req.body;
+    const user = req.user;
+
+    if (!user) {
+      return errorResponse(res, 'Usuario no autenticado', null, 401);
+    }
 
     if (latitude === undefined || longitude === undefined) {
-      return errorResponse(res, 'Coordenadas requeridas', null, 400);
+      return errorResponse(res, 'Coordenadas requeridas (latitude, longitude)', null, 400);
     }
 
     const lat = parseFloat(latitude);
     const lng = parseFloat(longitude);
     const last_ping = new Date().toISOString();
 
+    if (isNaN(lat) || isNaN(lng)) {
+      return errorResponse(res, 'Coordenadas numéricas inválidas', null, 400);
+    }
+
+    // 1. Obtener datos del camión
+    let targetTruck = null;
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
     try {
-      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let query = supabase.from('trucks').select('*');
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('code', id);
+      }
+      const { data, error } = await query.maybeSingle();
+      if (!error && data) {
+        targetTruck = data;
+      }
+    } catch (dbErr) {
+      console.warn('Error buscando camión para GPS:', dbErr.message);
+    }
+
+    if (!targetTruck) {
+      targetTruck = LOCAL_TRUCKS.find(t => t.id === id || t.code === id);
+    }
+
+    if (!targetTruck) {
+      return errorResponse(res, 'Camión no encontrado', null, 404);
+    }
+
+    // 2. Validación de Ownership / Rol
+    const userRole = user.app_metadata?.role || user.user_metadata?.role || 'citizen';
+    const isPrivileged = ['admin', 'supervisor'].includes(userRole);
+    const isAssignedDriver = targetTruck.assigned_user_id === user.id;
+
+    if (!isPrivileged && !isAssignedDriver) {
+      return errorResponse(
+        res,
+        'Acceso denegado: Solo administradores, supervisores o el chofer asignado a este camión pueden actualizar su ubicación GPS.',
+        null,
+        403
+      );
+    }
+
+    // 3. Actualizar ubicación en Supabase
+    try {
       let query = supabase.from('trucks').update({ current_lat: lat, current_lng: lng, last_ping });
       if (isUUID) {
         query = query.eq('id', id);
@@ -406,9 +457,10 @@ export const updateTruckLocation = async (req, res) => {
     if (tIdx !== -1) {
       LOCAL_TRUCKS[tIdx].current_lat = lat;
       LOCAL_TRUCKS[tIdx].current_lng = lng;
+      LOCAL_TRUCKS[tIdx].last_ping = last_ping;
     }
 
-    return successResponse(res, 'Ubicación de camión actualizada', { id, latitude: lat, longitude: lng });
+    return successResponse(res, 'Ubicación de camión actualizada', { id, latitude: lat, longitude: lng, last_ping });
   } catch (err) {
     return errorResponse(res, 'Error al procesar GPS de camión', err, 500);
   }
@@ -1319,4 +1371,290 @@ export const resetTruckMaintenance = async (req, res) => {
     return errorResponse(res, 'Error al resetear mantenimiento del camión', err, 500);
   }
 };
+
+/**
+ * Optimizar ruta de recolección de denuncias para un camión según su capacidad (VROOM)
+ * POST /api/fleet/trucks/:id/optimize-reports
+ * Body: { reportIds: string[], startCoords?: { lat, lng }, endCoords?: { lat, lng } }
+ */
+export const optimizeTruckReports = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reportIds, startCoords, endCoords } = req.body;
+
+    if (!Array.isArray(reportIds) || reportIds.length === 0) {
+      return errorResponse(
+        res,
+        'Debe proporcionar un array reportIds con al menos un ID de denuncia para optimizar',
+        null,
+        400
+      );
+    }
+
+    // 1. Obtener datos del camión (capacidad, coordenadas actuales, código)
+    let targetTruck = null;
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let query = supabase.from('trucks').select('*');
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('code', id);
+      }
+      const { data, error } = await query.maybeSingle();
+      if (!error && data) {
+        targetTruck = data;
+      }
+    } catch (dbErr) {
+      console.warn('Error buscando camión en Supabase para optimización:', dbErr.message);
+    }
+
+    if (!targetTruck) {
+      targetTruck = LOCAL_TRUCKS.find(t => t.id === id || t.code === id);
+    }
+
+    if (!targetTruck) {
+      return errorResponse(res, 'Camión recolector no encontrado', null, 404);
+    }
+
+    // 2. Obtener las denuncias seleccionadas
+    let selectedReports = [];
+    try {
+      const { data: reportsData, error: reportsErr } = await supabase
+        .from('reports')
+        .select('*')
+        .in('id', reportIds);
+
+      if (!reportsErr && reportsData && reportsData.length > 0) {
+        selectedReports = reportsData;
+      }
+    } catch (dbErr) {
+      console.warn('Error consultando denuncias en Supabase:', dbErr.message);
+    }
+
+    // Fallback con reportIds que coincidan por ticket_number si no fue por UUID
+    if (selectedReports.length === 0) {
+      try {
+        const { data: byTickets } = await supabase
+          .from('reports')
+          .select('*')
+          .in('ticket_number', reportIds);
+        if (byTickets && byTickets.length > 0) {
+          selectedReports = byTickets;
+        }
+      } catch (e) {}
+    }
+
+    if (selectedReports.length === 0) {
+      return errorResponse(res, 'No se encontraron las denuncias especificadas en la base de datos', null, 404);
+    }
+
+    // 3. Determinar coordenadas de inicio (startCoords o ubicación actual del camión o base municipal)
+    const truckStart = startCoords || (targetTruck.current_lat && targetTruck.current_lng ? {
+      lat: targetTruck.current_lat,
+      lng: targetTruck.current_lng
+    } : null);
+
+    // 4. Ejecutar el motor de optimización ORS VROOM
+    const capacityTons = targetTruck.capacity_tons || 12.0;
+    const optimizationResult = await optimizeDenunciasRoute(
+      capacityTons,
+      truckStart,
+      endCoords,
+      selectedReports
+    );
+
+    return successResponse(res, 'Ruta de recolección de denuncias optimizada con éxito', {
+      truck: {
+        id: targetTruck.id,
+        code: targetTruck.code,
+        plate_number: targetTruck.plate_number,
+        model: targetTruck.model,
+        capacity_tons: capacityTons,
+        status: targetTruck.status
+      },
+      ...optimizationResult
+    });
+  } catch (err) {
+    return errorResponse(res, 'Error al optimizar ruta de denuncias para el camión', err, 500);
+  }
+};
+
+/**
+ * Despacho masivo y asignación oficial de denuncias al camión en la base de datos (Admin / Supervisor)
+ * POST /api/fleet/trucks/:id/dispatch-route
+ * Body: { reportIds: string[] }
+ */
+export const dispatchOptimizedRoute = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { reportIds } = req.body;
+
+    if (!Array.isArray(reportIds) || reportIds.length === 0) {
+      return errorResponse(
+        res,
+        'Debe proporcionar un array reportIds con al menos un ID de denuncia para despachar',
+        null,
+        400
+      );
+    }
+
+    // 1. Obtener y validar el camión destino
+    let targetTruck = null;
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      let query = supabase.from('trucks').select('*');
+      if (isUUID) {
+        query = query.eq('id', id);
+      } else {
+        query = query.eq('code', id);
+      }
+      const { data, error } = await query.maybeSingle();
+      if (!error && data) {
+        targetTruck = data;
+      }
+    } catch (dbErr) {
+      console.warn('Error buscando camión en Supabase para despacho:', dbErr.message);
+    }
+
+    if (!targetTruck) {
+      targetTruck = LOCAL_TRUCKS.find(t => t.id === id || t.code === id);
+    }
+
+    if (!targetTruck) {
+      return errorResponse(res, 'Camión recolector no encontrado', null, 404);
+    }
+
+    const assignedTruckId = targetTruck.id || id;
+    const truckCapacityTons = targetTruck.capacity_tons || 12.0;
+    const truckCapacityKg = Math.round(truckCapacityTons * 1000);
+
+    // 2. Obtener estado actual de las denuncias a despachar
+    let existingReports = [];
+    try {
+      const { data: repData, error: repErr } = await supabase
+        .from('reports')
+        .select('id, ticket_number, status, assigned_truck_id, category')
+        .in('id', reportIds);
+
+      if (!repErr && repData && repData.length > 0) {
+        existingReports = repData;
+      }
+    } catch (e) {
+      console.warn('Error consultando denuncias en Supabase para validación de despacho:', e.message);
+    }
+
+    // Fallback con ticket_number si no fue por UUID
+    if (existingReports.length === 0) {
+      try {
+        const { data: repByTicket } = await supabase
+          .from('reports')
+          .select('id, ticket_number, status, assigned_truck_id, category')
+          .in('ticket_number', reportIds);
+
+        if (repByTicket && repByTicket.length > 0) {
+          existingReports = repByTicket;
+        }
+      } catch (e) {}
+    }
+
+    if (existingReports.length === 0) {
+      return errorResponse(res, 'No se encontraron las denuncias indicadas en la base de datos', null, 404);
+    }
+
+    // 3. VALIDACIÓN 1: Capacidad Máxima del Camión (Backend Check)
+    const totalWeightKg = existingReports.reduce((acc, r) => acc + estimateReportWeightKg(r), 0);
+    const totalWeightTons = Number((totalWeightKg / 1000).toFixed(2));
+
+    if (totalWeightKg > truckCapacityKg) {
+      return errorResponse(
+        res,
+        `Exceso de capacidad: La carga total solicitada (${totalWeightTons} Tn / ${totalWeightKg} kg) supera la capacidad máxima del camión ${targetTruck.code} (${truckCapacityTons} Tn).`,
+        {
+          totalWeightKg,
+          totalWeightTons,
+          truckCapacityTons,
+          truckCapacityKg
+        },
+        400
+      );
+    }
+
+    // 4. VALIDACIÓN 2: Exclusividad y Detección de Conflictos
+    const skippedConflicts = [];
+    const validReportIds = [];
+
+    for (const rep of existingReports) {
+      // Conflicto: Denuncia ya en proceso con OTRO camión
+      const isAssignedToOther =
+        rep.status === 'EN_PROCESO' &&
+        rep.assigned_truck_id &&
+        rep.assigned_truck_id !== assignedTruckId &&
+        rep.assigned_truck_id !== targetTruck.code;
+
+      if (isAssignedToOther) {
+        skippedConflicts.push({
+          id: rep.id,
+          ticket_number: rep.ticket_number,
+          status: rep.status,
+          currently_assigned_to: rep.assigned_truck_id
+        });
+      } else {
+        validReportIds.push(rep.id);
+      }
+    }
+
+    // Si todas las denuncias estaban en conflicto, no aplicar UPDATE y avisar
+    if (validReportIds.length === 0) {
+      return successResponse(
+        res,
+        'No se despacharon denuncias: Todas las seleccionadas ya se encuentran en proceso con otra unidad.',
+        {
+          truck: {
+            id: targetTruck.id,
+            code: targetTruck.code,
+            plate_number: targetTruck.plate_number,
+            model: targetTruck.model
+          },
+          updated_count: 0,
+          reports: [],
+          skipped_conflicts: skippedConflicts
+        }
+      );
+    }
+
+    // 5. UPDATE masivo en la tabla reports vía Supabase (solo sobre las no conflictivas)
+    const { data: updatedReports, error: updateError } = await supabase
+      .from('reports')
+      .update({
+        status: 'EN_PROCESO',
+        assigned_truck_id: assignedTruckId,
+        admin_notes: 'Asignación automática vía motor de ruteo'
+      })
+      .in('id', validReportIds)
+      .select();
+
+    if (updateError) {
+      console.error('[FleetController - dispatchOptimizedRoute] Error en UPDATE masivo de denuncias en Supabase:', updateError);
+      throw updateError;
+    }
+
+    return successResponse(res, 'Ruta despachada y denuncias asignadas con éxito', {
+      truck: {
+        id: targetTruck.id,
+        code: targetTruck.code,
+        plate_number: targetTruck.plate_number,
+        model: targetTruck.model
+      },
+      updated_count: updatedReports?.length || 0,
+      reports: updatedReports || [],
+      skipped_conflicts: skippedConflicts
+    });
+  } catch (err) {
+    console.error('[FleetController - dispatchOptimizedRoute] Excepción al despachar ruta:', err);
+    return errorResponse(res, 'Error al despachar y asignar ruta optimizada al camión', err, 500);
+  }
+};
+
+
 

@@ -15,7 +15,9 @@ import {
   getAvailableDrivers,
   getMyTruck,
   reportTruckIssue,
-  resetTruckMaintenance
+  resetTruckMaintenance,
+  optimizeTruckReports,
+  dispatchOptimizedRoute
 } from '../controllers/fleet.controller.js';
 import { authenticate, requireRole } from '../middlewares/auth.js';
 import { uploadReportPhotoMiddleware } from '../middlewares/upload.js';
@@ -78,7 +80,13 @@ router.post('/trucks/:id/report-issue', uploadReportPhotoMiddleware, reportTruck
 
 // Registro de entradas / salidas (Bitácora)
 router.post('/logs', requireRole(['admin', 'supervisor', 'operator', 'chofer']), registerFleetLog);
-router.get('/logs', getFleetLogs);
+router.get('/logs', requireRole(['admin', 'supervisor']), getFleetLogs);
+
+// Optimización de rutas de denuncias con motor VROOM según capacidad del camión
+router.post('/trucks/:id/optimize-reports', requireRole(['admin', 'supervisor']), optimizeTruckReports);
+
+// Despacho masivo y asignación oficial de denuncias al camión
+router.post('/trucks/:id/dispatch-route', requireRole(['admin', 'supervisor']), dispatchOptimizedRoute);
 
 // Telemetría GPS
 router.patch('/trucks/:id/location', updateTruckLocation);
