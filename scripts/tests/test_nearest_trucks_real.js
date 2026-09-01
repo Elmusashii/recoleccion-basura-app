@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { supabase } from './src/config/supabase.js';
-import { getNearestTrucksForReport } from './src/controllers/reports.controller.js';
+import { supabase } from '../../server/src/config/supabase.js';
+import { getNearestTrucksForReport } from '../../server/src/controllers/reports.controller.js';
 
 async function testNearestTrucks() {
   console.log('=== TEST DIAGNÓSTICO: POST /api/reports/:id/nearest-trucks ===\n');

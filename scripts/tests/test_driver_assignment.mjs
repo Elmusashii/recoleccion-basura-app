@@ -1,4 +1,4 @@
-import { supabase } from '../server/src/config/supabase.js';
+import { supabase } from '../../server/src/config/supabase.js';
 
 async function runTests() {
   console.log('--- OBTENIENDO TOKEN DE ADMIN ---');

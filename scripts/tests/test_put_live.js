@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { supabase } from './src/config/supabase.js';
+import { supabase } from '../../server/src/config/supabase.js';
 
 async function testPutEndpoint() {
   console.log('=== TEST DIRECTO CONTRA EL SERVIDOR EXPRESS (PORT 5000) ===\n');

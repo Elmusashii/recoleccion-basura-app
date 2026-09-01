@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { supabase } from './src/config/supabase.js';
-import { getNearestTrucksForReport, updateReportStatus } from './src/controllers/reports.controller.js';
+import { supabase } from '../../server/src/config/supabase.js';
+import { getNearestTrucksForReport, updateReportStatus } from '../../server/src/controllers/reports.controller.js';
 
 async function testJaraAssignment() {
   console.log('=== TEST ASIGNACIÓN DENUNCIA JARA ===\n');
