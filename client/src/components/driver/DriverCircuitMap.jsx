@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { Truck, AlertTriangle, AlertCircle, Navigation } from 'lucide-react';
 import { BARRIOS_ASUNCION_GEOJSON } from '../../data/barriosAsuncionGeoJSON';
 import { getTurnoColor } from '../InteractiveMap';
+import { handleNavigate } from '../../utils/navigationUtils';
 
 // Normalizador de cadenas para matching seguro de nombres de barrios
 const normalizeText = (str) => {
@@ -171,9 +172,9 @@ export const DriverCircuitMap = ({ routes = [], reports = [], truck = null, onSe
           zoomControl={true}
         >
           <TileLayer
-            key="driver-dark-carto"
-            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            key="driver-dark-esri"
+            attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
             maxZoom={19}
           />
 
@@ -215,12 +216,35 @@ export const DriverCircuitMap = ({ routes = [], reports = [], truck = null, onSe
                 }}
               >
                 <Popup className="custom-leaflet-popup">
-                  <div className="p-1 space-y-1 text-xs font-mono text-[#111111] dark:text-slate-100">
+                  <div className="p-1 space-y-1.5 text-xs font-mono text-[#111111] dark:text-slate-100">
                     <p className="font-bold">{rep.ticket_number || 'Denuncia'}</p>
                     <p className="text-[11px] text-[#666666] dark:text-slate-400 truncate">{rep.description}</p>
+                    
+                    {/* Botones de Navegación GPS (Deep Linking) */}
+                    <div className="grid grid-cols-2 gap-1 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleNavigate(rep.latitude, rep.longitude, 'google')}
+                        className="bg-[#f5f5f5] hover:bg-[#e5e5e5] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#111111] dark:text-slate-200 border border-[#cccccc] dark:border-slate-700 py-1 px-1.5 text-[10px] font-mono rounded-sm flex items-center justify-center space-x-1 transition-colors"
+                        title="Abrir destino en Google Maps"
+                      >
+                        <Navigation className="w-2.5 h-2.5 shrink-0" />
+                        <span>G. Maps</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleNavigate(rep.latitude, rep.longitude, 'waze')}
+                        className="bg-[#f5f5f5] hover:bg-[#e5e5e5] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#111111] dark:text-slate-200 border border-[#cccccc] dark:border-slate-700 py-1 px-1.5 text-[10px] font-mono rounded-sm flex items-center justify-center space-x-1 transition-colors"
+                        title="Abrir destino en Waze"
+                      >
+                        <Navigation className="w-2.5 h-2.5 shrink-0" />
+                        <span>Waze</span>
+                      </button>
+                    </div>
+
                     <button
                       onClick={() => onSelectReport && onSelectReport(rep)}
-                      className="w-full mt-1 bg-[#111111] dark:bg-slate-100 text-[#ffffff] dark:text-[#111111] py-1 px-2 text-[10px] font-bold rounded-sm uppercase tracking-wider"
+                      className="w-full mt-1 bg-[#111111] dark:bg-slate-100 text-[#ffffff] dark:text-[#111111] py-1.5 px-2 text-[10px] font-bold rounded-sm uppercase tracking-wider hover:opacity-85 transition-opacity"
                     >
                       Resolver Denuncia
                     </button>

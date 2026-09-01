@@ -22,6 +22,7 @@ import {
 import { FleetAPI, ReportsAPI } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { DriverCircuitMap } from './DriverCircuitMap';
+import { handleNavigate } from '../../utils/navigationUtils';
 
 const ISSUE_TYPES = [
   { value: 'MECANICA', label: 'Falla Mecánica (Motor, Caja, Frenos)' },
@@ -505,33 +506,48 @@ export const DriverDashboard = () => {
                   </div>
                 )}
 
-                {/* BOTONES DE ACCIÓN OPERATIVA */}
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#e5e5e5] dark:border-slate-800">
-                  {/* Botón Google Maps */}
+                {/* BOTONES DE ACCIÓN OPERATIVA (Monochrome Deep Linking) */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-[#e5e5e5] dark:border-slate-800">
+                  {/* Botones de Navegación GPS (Deep Linking) */}
                   {report.latitude && report.longitude ? (
-                    <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${report.latitude},${report.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-[#ffffff] hover:bg-[#f5f5f5] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#111111] dark:text-slate-200 font-medium py-2 px-3 rounded-sm text-xs flex items-center justify-center space-x-1.5 transition-colors border border-[#cccccc] dark:border-slate-700 font-mono"
-                    >
-                      <Navigation className="w-3.5 h-3.5 text-[#111111] dark:text-slate-200" />
-                      <span>Navegar GPS</span>
-                    </a>
+                    <div className="flex items-center space-x-1.5 flex-1">
+                      <button
+                        type="button"
+                        onClick={() => handleNavigate(report.latitude, report.longitude, 'google')}
+                        className="flex-1 bg-[#f5f5f5] hover:bg-[#e5e5e5] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#111111] dark:text-slate-200 border border-[#cccccc] dark:border-slate-700 font-medium py-2 px-2.5 rounded-sm text-xs flex items-center justify-center space-x-1 transition-colors font-mono"
+                        title="Abrir destino en Google Maps"
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-[#111111] dark:text-slate-200 shrink-0" />
+                        <span>G. Maps</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleNavigate(report.latitude, report.longitude, 'waze')}
+                        className="flex-1 bg-[#f5f5f5] hover:bg-[#e5e5e5] dark:bg-slate-800 dark:hover:bg-slate-700 text-[#111111] dark:text-slate-200 border border-[#cccccc] dark:border-slate-700 font-medium py-2 px-2.5 rounded-sm text-xs flex items-center justify-center space-x-1 transition-colors font-mono"
+                        title="Abrir destino en Waze"
+                      >
+                        <Navigation className="w-3.5 h-3.5 text-[#111111] dark:text-slate-200 shrink-0" />
+                        <span>Waze</span>
+                      </button>
+                    </div>
                   ) : (
-                    <button
-                      disabled
-                      className="bg-[#f5f5f5] dark:bg-slate-800/60 text-[#999999] dark:text-slate-500 font-medium py-2 px-3 rounded-sm text-xs flex items-center justify-center space-x-1.5 border border-[#e5e5e5] dark:border-slate-700 font-mono"
-                    >
-                      <Navigation className="w-3.5 h-3.5" />
-                      <span>Sin Coords</span>
-                    </button>
+                    <div className="flex-1">
+                      <button
+                        disabled
+                        className="w-full bg-[#f5f5f5] dark:bg-slate-800/60 text-[#999999] dark:text-slate-500 font-medium py-2 px-3 rounded-sm text-xs flex items-center justify-center space-x-1.5 border border-[#e5e5e5] dark:border-slate-700 font-mono"
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>Sin Coords</span>
+                      </button>
+                    </div>
                   )}
 
                   {/* Botón Marcar como Resuelta */}
                   <button
+                    type="button"
                     onClick={() => handleOpenResolveModal(report)}
-                    className="bg-[#111111] hover:opacity-80 dark:bg-slate-100 dark:text-slate-950 text-[#fafafa] font-medium py-2 px-3 rounded-sm text-xs flex items-center justify-center space-x-1.5 transition-colors font-mono uppercase"
+                    className="flex-1 bg-[#111111] hover:opacity-85 dark:bg-slate-100 dark:text-slate-950 text-[#fafafa] font-medium py-2 px-3 rounded-sm text-xs flex items-center justify-center space-x-1.5 transition-colors font-mono uppercase"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>Marcar Resuelta</span>
