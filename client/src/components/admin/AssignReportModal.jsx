@@ -62,10 +62,7 @@ export const AssignReportModal = ({ isOpen, onClose, report, trucks = [], onAssi
       };
 
       const reportIdentifier = report.id || report.ticket_number;
-      console.log('[DEBUG Frontend AssignReportModal] report prop received:', JSON.stringify(report, null, 2));
-      console.log('[DEBUG Frontend AssignReportModal] Submitting reportIdentifier:', reportIdentifier, 'payload:', payload);
       const response = await ReportsAPI.updateStatus(reportIdentifier, payload);
-      console.log('[DEBUG Frontend AssignReportModal] Backend response:', response.data);
       const updated = response.data?.data || {
         ...report,
         ...payload

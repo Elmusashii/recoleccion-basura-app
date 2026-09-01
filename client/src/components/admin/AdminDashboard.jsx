@@ -13,6 +13,7 @@ import {
   FileText,
   RefreshCw,
   Map,
+  Table,
   Calendar,
   Search,
   MapPin,
@@ -32,6 +33,8 @@ import { UserManagement } from './UserManagement';
 import { AssignReportModal } from './AssignReportModal';
 import { ResolveReportModal } from './ResolveReportModal';
 import { AssignTruckCircuitModal } from './AssignTruckCircuitModal';
+import { ReportsMapView } from './ReportsMapView';
+import { OptimizeReportsModal } from './OptimizeReportsModal';
 import { useAuth } from '../../context/AuthContext';
 import { exportToExcel } from '../../utils/exportUtils';
 
@@ -47,6 +50,11 @@ export const AdminDashboard = () => {
   const [routeSearch, setRouteSearch] = useState('');
   const [routeDayFilter, setRouteDayFilter] = useState('ALL');
   const [routeShiftFilter, setRouteShiftFilter] = useState('ALL');
+
+  // Modo de visualización de denuncias ('TABLE' o 'MAP') y selección espacial
+  const [reportViewMode, setReportViewMode] = useState('TABLE');
+  const [selectedReportIds, setSelectedReportIds] = useState([]);
+  const [isOptimizeModalOpen, setIsOptimizeModalOpen] = useState(false);
 
   // Modales operativos de denuncias
   const [selectedReportForAssign, setSelectedReportForAssign] = useState(null);
@@ -510,132 +518,181 @@ export const AdminDashboard = () => {
       {/* Pestaña 1: GESTIÓN DE DENUNCIAS */}
       {activeTab === 'REPORTS' && (
         <div className="p-4 rounded-sm border border-[#e5e5e5] dark:border-slate-800 bg-[#ffffff] dark:bg-slate-950 space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-tight text-[#111111] dark:text-slate-100">Denuncias Registradas</h2>
-              <p className="text-xs text-[#666666] dark:text-slate-400">Listado consolidado de reportes ciudadanos</p>
+              <h2 className="text-xs font-bold uppercase tracking-tight text-[#111111] dark:text-slate-100">
+                Denuncias Registradas
+              </h2>
+              <p className="text-xs text-[#666666] dark:text-slate-400">
+                {reportViewMode === 'TABLE'
+                  ? 'Listado consolidado de reportes ciudadanos'
+                  : 'Selección espacial para optimización y despacho de rutas (VROOM)'}
+              </p>
             </div>
-            <div className="flex items-center space-x-3">
-              <span className="text-xs text-[#666666] dark:text-slate-400 font-mono">Total: {reports.length}</span>
-              <button
-                onClick={() => exportToExcel(reports, 'denuncias_municipales.xlsx', 'Denuncias')}
-                className="flex items-center space-x-1.5 bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 hover:opacity-85 text-xs font-mono px-3 py-1.5 rounded-sm transition-colors font-medium"
-                title="Exportar todas las denuncias a formato Excel"
-              >
-                <Download className="w-3.5 h-3.5" />
-                <span>Exportar a Excel</span>
-              </button>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Toggle Vista Tabla / Mapa Espacial (Monochrome) */}
+              <div className="flex items-center p-0.5 rounded-sm border border-[#cccccc] dark:border-slate-700 bg-[#f5f5f5] dark:bg-slate-900">
+                <button
+                  type="button"
+                  onClick={() => setReportViewMode('TABLE')}
+                  className={`flex items-center space-x-1.5 px-3 py-1 text-xs font-mono rounded-sm transition-colors ${
+                    reportViewMode === 'TABLE'
+                      ? 'bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 font-bold shadow-sm'
+                      : 'text-[#666666] dark:text-slate-400 hover:text-[#111111] dark:hover:text-slate-200'
+                  }`}
+                  title="Ver listado en formato tabla"
+                >
+                  <Table className="w-3.5 h-3.5" />
+                  <span>Tabla ({reports.length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReportViewMode('MAP')}
+                  className={`flex items-center space-x-1.5 px-3 py-1 text-xs font-mono rounded-sm transition-colors ${
+                    reportViewMode === 'MAP'
+                      ? 'bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 font-bold shadow-sm'
+                      : 'text-[#666666] dark:text-slate-400 hover:text-[#111111] dark:hover:text-slate-200'
+                  }`}
+                  title="Ver mapa espacial y herramienta de selección"
+                >
+                  <Map className="w-3.5 h-3.5" />
+                  <span>Mapa Espacial</span>
+                </button>
+              </div>
+
+              {reportViewMode === 'TABLE' && (
+                <button
+                  onClick={() => exportToExcel(reports, 'denuncias_municipales.xlsx', 'Denuncias')}
+                  className="flex items-center space-x-1.5 bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 hover:opacity-85 text-xs font-mono px-3 py-1.5 rounded-sm transition-colors font-medium"
+                  title="Exportar todas las denuncias a formato Excel"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Exportar a Excel</span>
+                </button>
+              )}
             </div>
           </div>
 
-          <div className="overflow-x-auto rounded-sm border border-[#e5e5e5] dark:border-slate-800">
-            <table className="w-full text-left text-xs text-[#111111] dark:text-slate-100">
-              <thead className="bg-[#f5f5f5] dark:bg-slate-900 text-[#666666] dark:text-slate-400 uppercase text-[10px] tracking-wider border-b border-[#e5e5e5] dark:border-slate-800 font-mono">
-                <tr>
-                  <th className="py-2.5 px-3">Acciones</th>
-                  <th className="py-2.5 px-3">Ticket</th>
-                  <th className="py-2.5 px-3">Fecha y Hora</th>
-                  <th className="py-2.5 px-3">Ciudadano</th>
-                  <th className="py-2.5 px-3">Categoría</th>
-                  <th className="py-2.5 px-3">Descripción</th>
-                  <th className="py-2.5 px-3">Ubicación / Ref</th>
-                  <th className="py-2.5 px-3">Foto</th>
-                  <th className="py-2.5 px-3">Estado</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#e5e5e5] dark:divide-slate-800">
-                {reports.length === 0 ? (
+          {/* Renderizado Condicional: Mapa Espacial o Tabla */}
+          {reportViewMode === 'MAP' ? (
+            <ReportsMapView
+              reports={reports}
+              trucks={trucks}
+              selectedReportIds={selectedReportIds}
+              onSelectionChange={setSelectedReportIds}
+              onOpenOptimizeModal={() => setIsOptimizeModalOpen(true)}
+            />
+          ) : (
+            <div className="overflow-x-auto rounded-sm border border-[#e5e5e5] dark:border-slate-800">
+              <table className="w-full text-left text-xs text-[#111111] dark:text-slate-100">
+                <thead className="bg-[#f5f5f5] dark:bg-slate-900 text-[#666666] dark:text-slate-400 uppercase text-[10px] tracking-wider border-b border-[#e5e5e5] dark:border-slate-800 font-mono">
                   <tr>
-                    <td colSpan="9" className="py-8 text-center text-[#666666] dark:text-slate-400 font-mono">
-                      No hay denuncias registradas en la base de datos actualmente.
-                    </td>
+                    <th className="py-2.5 px-3">Acciones</th>
+                    <th className="py-2.5 px-3">Ticket</th>
+                    <th className="py-2.5 px-3">Fecha y Hora</th>
+                    <th className="py-2.5 px-3">Ciudadano</th>
+                    <th className="py-2.5 px-3">Categoría</th>
+                    <th className="py-2.5 px-3">Descripción</th>
+                    <th className="py-2.5 px-3">Ubicación / Ref</th>
+                    <th className="py-2.5 px-3">Foto</th>
+                    <th className="py-2.5 px-3">Estado</th>
                   </tr>
-                ) : (
-                  reports.map((r) => (
-                    <tr key={r.id} className="hover:bg-[#f5f5f5] dark:hover:bg-slate-900/50 transition-colors">
-                      <td className="py-2.5 px-3 space-x-1.5 whitespace-nowrap">
-                        {r.status === 'PENDIENTE' && (
-                          <button
-                            onClick={() => setSelectedReportForAssign(r)}
-                            className="bg-[#f5f5f5] dark:bg-slate-800 text-[#111111] dark:text-slate-200 border border-[#cccccc] dark:border-slate-700 hover:bg-[#e5e5e5] dark:hover:bg-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-sm transition-colors font-mono"
-                          >
-                            Atender
-                          </button>
-                        )}
-                        {r.status !== 'RESUELTO' && (
-                          <button
-                            onClick={() => setSelectedReportForResolve(r)}
-                            className="bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 hover:opacity-80 text-[11px] font-medium px-2.5 py-1 rounded-sm transition-colors font-mono"
-                          >
-                            Resolver
-                          </button>
-                        )}
-                        {r.status === 'RESUELTO' && (
-                          <span className="border border-[#cccccc] dark:border-slate-700 text-[#666666] dark:text-slate-400 font-mono text-[10px] px-2 py-0.5 rounded-sm bg-transparent">
-                            Completado
-                          </span>
-                        )}
-                      </td>
-                      <td className="py-2.5 px-3 font-mono text-xs text-[#111111] dark:text-slate-100 font-bold whitespace-nowrap">
-                        {r.ticket_number || 'N/A'}
-                      </td>
-                      <td className="py-2.5 px-3 whitespace-nowrap text-[#111111] dark:text-slate-100 font-mono">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-[11px]">
-                            {r.created_at ? new Date(r.created_at).toLocaleDateString('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/D'}
-                          </span>
-                          <span className="text-[10px] text-[#666666] dark:text-slate-400">
-                            {r.created_at ? new Date(r.created_at).toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }) + ' hs' : ''}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="font-medium block text-[#111111] dark:text-slate-100">{r.citizen_name || 'Anónimo'}</span>
-                        {r.citizen_phone && <span className="text-[10px] text-[#666666] dark:text-slate-400 font-mono">{r.citizen_phone}</span>}
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span className="bg-[#f5f5f5] dark:bg-slate-800 text-[#111111] dark:text-slate-200 px-2 py-0.5 rounded-sm border border-[#e5e5e5] dark:border-slate-700 whitespace-nowrap text-[11px] font-mono">
-                          {r.category?.replace(/_/g, ' ')}
-                        </span>
-                      </td>
-                      <td className="py-2.5 px-3 max-w-xs truncate text-[#333333] dark:text-slate-300" title={r.description}>
-                        {r.description}
-                      </td>
-                      <td className="py-2.5 px-3 text-[#666666] dark:text-slate-400 max-w-[200px] truncate font-mono text-[11px]" title={r.address_reference}>
-                        {r.address_reference || `${r.latitude?.toFixed(4)}, ${r.longitude?.toFixed(4)}`}
-                      </td>
-                      <td className="py-2.5 px-3">
-                        {r.photo_urls && r.photo_urls.length > 0 ? (
-                          <button
-                            onClick={() => setSelectedPhoto(r.photo_urls[0])}
-                            className="flex items-center space-x-1 text-[#111111] dark:text-slate-200 hover:underline font-mono bg-[#f5f5f5] dark:bg-slate-800 px-2 py-0.5 rounded-sm border border-[#e5e5e5] dark:border-slate-700 text-[11px]"
-                          >
-                            <Eye className="w-3 h-3" />
-                            <span>Ver ({r.photo_urls.length})</span>
-                          </button>
-                        ) : (
-                          <span className="text-[#999999] dark:text-slate-500 italic text-[11px] font-mono">Sin foto</span>
-                        )}
-                      </td>
-                      <td className="py-2.5 px-3">
-                        <span
-                          className={`px-2 py-0.5 rounded-sm font-mono text-[10px] whitespace-nowrap ${
-                            r.status === 'PENDIENTE'
-                              ? 'border border-[#111111] dark:border-slate-600 text-[#111111] dark:text-slate-200 bg-transparent'
-                              : r.status === 'EN_PROCESO'
-                                ? 'bg-[#e5e5e5] dark:bg-slate-800 text-[#111111] dark:text-slate-200'
-                                : 'bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 font-medium'
-                          }`}
-                        >
-                          {r.status}
-                        </span>
+                </thead>
+                <tbody className="divide-y divide-[#e5e5e5] dark:divide-slate-800">
+                  {reports.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" className="py-8 text-center text-[#666666] dark:text-slate-400 font-mono">
+                        No hay denuncias registradas en la base de datos actualmente.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    reports.map((r) => (
+                      <tr key={r.id} className="hover:bg-[#f5f5f5] dark:hover:bg-slate-900/50 transition-colors">
+                        <td className="py-2.5 px-3 space-x-1.5 whitespace-nowrap">
+                          {r.status === 'PENDIENTE' && (
+                            <button
+                              onClick={() => setSelectedReportForAssign(r)}
+                              className="bg-[#f5f5f5] dark:bg-slate-800 text-[#111111] dark:text-slate-200 border border-[#cccccc] dark:border-slate-700 hover:bg-[#e5e5e5] dark:hover:bg-slate-700 text-[11px] font-medium px-2.5 py-1 rounded-sm transition-colors font-mono"
+                            >
+                              Atender
+                            </button>
+                          )}
+                          {r.status !== 'RESUELTO' && (
+                            <button
+                              onClick={() => setSelectedReportForResolve(r)}
+                              className="bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 hover:opacity-80 text-[11px] font-medium px-2.5 py-1 rounded-sm transition-colors font-mono"
+                            >
+                              Resolver
+                            </button>
+                          )}
+                          {r.status === 'RESUELTO' && (
+                            <span className="border border-[#cccccc] dark:border-slate-700 text-[#666666] dark:text-slate-400 font-mono text-[10px] px-2 py-0.5 rounded-sm bg-transparent">
+                              Completado
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 font-mono text-xs text-[#111111] dark:text-slate-100 font-bold whitespace-nowrap">
+                          {r.ticket_number || 'N/A'}
+                        </td>
+                        <td className="py-2.5 px-3 whitespace-nowrap text-[#111111] dark:text-slate-100 font-mono">
+                          <div className="flex flex-col">
+                            <span className="font-medium text-[11px]">
+                              {r.created_at ? new Date(r.created_at).toLocaleDateString('es-PY', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/D'}
+                            </span>
+                            <span className="text-[10px] text-[#666666] dark:text-slate-400">
+                              {r.created_at ? new Date(r.created_at).toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }) + ' hs' : ''}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="font-medium block text-[#111111] dark:text-slate-100">{r.citizen_name || 'Anónimo'}</span>
+                          {r.citizen_phone && <span className="text-[10px] text-[#666666] dark:text-slate-400 font-mono">{r.citizen_phone}</span>}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span className="bg-[#f5f5f5] dark:bg-slate-800 text-[#111111] dark:text-slate-200 px-2 py-0.5 rounded-sm border border-[#e5e5e5] dark:border-slate-700 whitespace-nowrap text-[11px] font-mono">
+                            {r.category?.replace(/_/g, ' ')}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 max-w-xs truncate text-[#333333] dark:text-slate-300" title={r.description}>
+                          {r.description}
+                        </td>
+                        <td className="py-2.5 px-3 text-[#666666] dark:text-slate-400 max-w-[200px] truncate font-mono text-[11px]" title={r.address_reference}>
+                          {r.address_reference || `${r.latitude?.toFixed(4)}, ${r.longitude?.toFixed(4)}`}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          {r.photo_urls && r.photo_urls.length > 0 ? (
+                            <button
+                              onClick={() => setSelectedPhoto(r.photo_urls[0])}
+                              className="flex items-center space-x-1 text-[#111111] dark:text-slate-200 hover:underline font-mono bg-[#f5f5f5] dark:bg-slate-800 px-2 py-0.5 rounded-sm border border-[#e5e5e5] dark:border-slate-700 text-[11px]"
+                            >
+                              <Eye className="w-3 h-3" />
+                              <span>Ver ({r.photo_urls.length})</span>
+                            </button>
+                          ) : (
+                            <span className="text-[#999999] dark:text-slate-500 italic text-[11px] font-mono">Sin foto</span>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span
+                            className={`px-2 py-0.5 rounded-sm font-mono text-[10px] whitespace-nowrap ${
+                              r.status === 'PENDIENTE'
+                                ? 'border border-[#111111] dark:border-slate-600 text-[#111111] dark:text-slate-200 bg-transparent'
+                                : r.status === 'EN_PROCESO'
+                                  ? 'bg-[#e5e5e5] dark:bg-slate-800 text-[#111111] dark:text-slate-200'
+                                  : 'bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 font-medium'
+                            }`}
+                          >
+                            {r.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
@@ -1434,6 +1491,39 @@ export const AdminDashboard = () => {
           fetchData();
         }}
       />
+
+      {/* Modal de Optimización de Denuncias con VROOM (OpenRouteService) */}
+      <OptimizeReportsModal
+        isOpen={isOptimizeModalOpen}
+        onClose={() => setIsOptimizeModalOpen(false)}
+        selectedReportIds={selectedReportIds}
+        reports={reports}
+        trucks={trucks}
+        onOptimizationApplied={(optResult, conflicts) => {
+          setSelectedReportIds([]);
+          if (conflicts && conflicts.length > 0) {
+            showToast(`Ruta despachada parcialmente (${conflicts.length} denuncias omitidas por conflicto)`);
+          } else {
+            showToast(`Ruta despachada con éxito (${optResult.summary?.total_stops || 0} paradas asignadas)`);
+          }
+          fetchData();
+        }}
+      />
+      {/* Notificación Toast Flotante (Monochrome) */}
+      {toastMessage && (
+        <div className="fixed bottom-5 right-5 z-[4000] bg-[#111111] text-[#ffffff] dark:bg-slate-100 dark:text-slate-950 px-4 py-2.5 rounded-sm shadow-2xl border border-[#cccccc] dark:border-slate-700 text-xs font-mono flex items-center space-x-2 animate-fadeIn">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-emerald-600 shrink-0" />
+          <span>{toastMessage}</span>
+          <button
+            type="button"
+            onClick={() => setToastMessage(null)}
+            className="ml-2 opacity-60 hover:opacity-100 transition-opacity"
+            title="Cerrar notificación"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

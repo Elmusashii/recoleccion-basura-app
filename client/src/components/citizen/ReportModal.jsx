@@ -209,7 +209,6 @@ export const ReportModal = ({ isOpen, onClose, onReportCreated, initialBarrio = 
 
       const response = await ReportsAPI.create(payload);
       const created = response.data?.data;
-      console.log('[DEBUG Frontend ReportModal] Created report response from POST /api/reports:', JSON.stringify(created, null, 2));
 
       setCreatedTicket(created?.ticket_number || `ASU-${Date.now().toString().slice(-6)}`);
       if (onReportCreated) onReportCreated(created);

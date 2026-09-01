@@ -257,10 +257,10 @@ export const InteractiveMap = ({
     ? darkMode
     : (typeof document !== 'undefined' && document.documentElement.classList.contains('dark'));
 
-  // Capa Base Invertida: CARTO Light para Modo Oscuro / CARTO Dark para Modo Claro
+  // Capa Base Invertida Esri Gray Canvas (World_Light_Gray_Base para Modo Oscuro / World_Dark_Gray_Base para Modo Claro)
   const tileUrl = isDark
-    ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+    : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
   const defaultCenter = [-25.2950, -57.6050];
   const [mapCenter, setMapCenter] = useState(defaultCenter);
   const [mapZoom, setMapZoom] = useState(13);
@@ -823,10 +823,10 @@ export const InteractiveMap = ({
           closePopupOnClick={false}
           className="w-full h-full z-0"
         >
-          {/* Capa Base Dinámica Invertida CARTO (Light en Dark Mode / Dark en Light Mode) */}
+          {/* Capa Base Dinámica Invertida Esri Gray Canvas */}
           <TileLayer
-            key={isDark ? 'light-tiles' : 'dark-tiles'}
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
+            key={isDark ? 'esri-light-tiles' : 'esri-dark-tiles'}
+            attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
             url={tileUrl}
             maxZoom={19}
           />
